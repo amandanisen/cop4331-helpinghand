@@ -112,16 +112,6 @@ export default function CreateCoordinator() {
                />
             </Grid>
             <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"Location"}
-                margin="normal"
-                variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
             <Button 
                 className={classes.smallbutton}
                 onClick={()=> history.push("/coordinatorpage", {role: ""})}>Submit

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Appbar from "../appbar/appbar.js";
+import { useLocation } from "react-router-dom";
 
 
 const useStyles = makeStyles({
@@ -30,42 +32,49 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
+  locationField:{
+    fontSize: 12
+  },
+  
   fab: {
     marginLeft: 'auto',
   }
 });
 
 export default function AreaCard(props) {
-
+  const location = useLocation();
+  console.log("location: ", location);
   // const [selected, setSelected] = useState(false)
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
-
   return (
+    <>
     <Card className={classes.root} onClick={() => {}} >
       <CardContent>
-        <Typography variant="h3" component="h2" align="center">
+      <Grid item xs={10}>
+            <Typography className={classes.locationField} color="textSecondary">
+            {props.location}
+            </Typography>
+          </Grid>
+        <Typography align="center">
           {props.name}
         </Typography>
       </CardContent>
       <CardActions>
         <Grid container spacing={3}>
-          <Grid item xs={2}>
-            <Typography color="textSecondary">
-              location
-            </Typography>
-          </Grid>
+         
           <Grid item xs={8}>
           </Grid>
           <Grid item xs={2}>
             <Typography color="textSecondary">
-              3/5
+            {props.numVol} / {props.maxVol}
             </Typography>
           </Grid>
         </Grid>
       </CardActions>
     </Card>
+    </>
   );
 }
 

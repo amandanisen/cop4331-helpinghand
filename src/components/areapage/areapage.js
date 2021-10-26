@@ -9,7 +9,29 @@ import { useHistory } from "react-router-dom";
 function AreaPage(props) {
   const [areas, setAreas] = useState([]);
   let history = useHistory();
-
+  const areasTest = [
+    {
+      id: "1",
+      name: "First Name",
+      location: "Downtown Orlando",
+      numVol: "5",
+      maxVol: "8"
+    },
+    {
+      id: "2",
+      name: "Second Name",
+      location: "Amway Center",
+      numVol: "1",
+      maxVol: "10"
+    },
+    {
+      id: "3",
+      name: "Third Name",
+      location: "UCF",
+      numVol: "2",
+      maxVol: "6"
+    }
+  ];
   useEffect(() => {
     if (props.areas) {
       setAreas(props.areas);
@@ -18,16 +40,16 @@ function AreaPage(props) {
 
   return (
     <div>
-      <Appbar title="Volunteer" />
+      <Appbar title="Volunteer Tasks Near You" />
       <Grid
           container
           direction="column"
           justify="space-between"
           alignItems="center"
       >
-        {areas.map((area, index) =>
+        {areasTest.map((area, index) =>
           <Grid item key={"area"+area.id}  onClick={() => history.push("/volunteer", {area_index: index}) }>
-            <AreaCard name={area.name}/>
+            <AreaCard name={area.name} location={area.location} numVol={area.numVol} maxVol={area.maxVol}/>
           </Grid>
         )}
       </Grid >
@@ -36,6 +58,7 @@ function AreaPage(props) {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
     areas: state.areas
   }

@@ -34,18 +34,20 @@ function AccessCodePage(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log(props);
     console.log("Access Code:", accessCode);
     console.log("Full Name:", fullName);
-
-    axios.get('/event/' + location.state.role + "/" + accessCode)
-      .then((response) => {
-        console.log("Reponse:", response);
-        props.areaAction(response.data.areas);
-        history.push("/areas");
-      })
-      .catch((error) => {
-        console.log("Get Event Error:", error);
-      })
+    props.areaAction("{1, test, 2}");
+    history.push("/areas");
+    // axios.get('/event/' + location.state.role + "/" + accessCode)
+    //   .then((response) => {
+    //     console.log("Reponse:", response);
+        // props.areaAction(response.data.areas);
+    //     history.push("/areas");
+    //   })
+    //   .catch((error) => {
+    //     console.log("Get Event Error:", error);
+    //   })
   }
   
     return (

@@ -57,17 +57,26 @@ export default function Appbar(props) {
     let history = useHistory();
 
     let appbarType = props;
+    let appBarName;
+    console.log("Props type: ", props.title);
+    if(props.title === "Coordinator"){
+        appBarName = "Coordinator";
+    }else if(props.type === "Volunteer"){
+        appBarName = "Volunteer";
+    }else if(props.type === "VolunteerAvailable"){
+        appBarName = "Tasks Available Near You";
+    }
     return (
         <>
-            {(props.type === "coordinator")
+            {(props.title === "Coordinator")
                 ?
                 <AppBar position="static" >
                     <Toolbar variant="dense" className={classes.root}>
                         <IconButton edge="start" className={classes.menuButton} aria-label="menu">
-                            <ArrowBackIosIcon className={classes.backIcon} />
+                            <ArrowBackIosIcon onClick={() => history.goBack()} />
                         </IconButton >
                         <Typography className={classes.title} variant="h6" noWrap>
-                            Coordinator
+                            Coordinator Test
                         </Typography>
                         <Typography variant="h6" color="inherit">
                             {props.eventName ? props.eventName : null} 
@@ -77,6 +86,7 @@ export default function Appbar(props) {
                     </Toolbar>
                 </AppBar>
                 :
+                
                 <AppBar position="static">
                     <Toolbar className={classes.root}>
                         <IconButton
@@ -88,9 +98,10 @@ export default function Appbar(props) {
                             <ArrowBackIosIcon onClick={() => history.goBack()} />
                         </IconButton>
                         <Typography className={classes.title} variant="h6" noWrap>
-                            {props.title}
+                            Test {props.title}
                         </Typography>
-                        <AddIcon/>
+                       
+                        {/* <AddIcon/> */}
 
                     </Toolbar>
                 </AppBar>

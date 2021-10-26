@@ -12,22 +12,28 @@ function AreaPage(props) {
   const areasTest = [
     {
       id: "1",
-      name: "First Name",
+      name: "Feed the Homeless",
       location: "Downtown Orlando",
+      miles:"2.5 miles",
+      description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed.",
       numVol: "5",
       maxVol: "8"
     },
     {
       id: "2",
-      name: "Second Name",
+      name: "Concert Cleanup",
+      description: "This is a description of concert cleanup. Need 10 participants to help clean after a concert.",
       location: "Amway Center",
+      miles:"3 miles",
       numVol: "1",
       maxVol: "10"
     },
     {
       id: "3",
-      name: "Third Name",
+      name: "Set up Tents",
+      description: "This is a description of setting up tents. Need 6 participants.",
       location: "UCF",
+      miles:"15 miles",
       numVol: "2",
       maxVol: "6"
     }
@@ -44,12 +50,12 @@ function AreaPage(props) {
       <Grid
           container
           direction="column"
-          justify="space-between"
+          // justify="space-between"
           alignItems="center"
       >
         {areasTest.map((area, index) =>
-          <Grid item key={"area"+area.id}  onClick={() => history.push("/volunteer", {area_index: index}) }>
-            <AreaCard name={area.name} location={area.location} numVol={area.numVol} maxVol={area.maxVol}/>
+          <Grid item key={"area"+area.id} onClick={() => history.push("/volunteer", {area_index: index}) }>
+            <AreaCard name={area.name} location={area.location} numVol={area.numVol} maxVol={area.maxVol} description={area.description} miles={area.miles}/>
           </Grid>
         )}
       </Grid >

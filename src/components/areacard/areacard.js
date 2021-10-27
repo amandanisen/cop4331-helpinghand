@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
 import {ThemeProvider, makeStyles } from '@material-ui/core/styles';
-// import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
-// import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Appbar from "../appbar/appbar.js";
 import { useLocation } from "react-router-dom";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VolunteerPage from '../volunteerpage/volunteerpage'
+import { useHistory } from "react-router-dom";
+
+
+const initialList = [
+  {
+    id: "4",
+    name: "Feed the Homeless 2.0",
+    location: "Downtown Orlando 2.0",
+    miles:"2.6 miles",
+    description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 2.0",
+    numVol: "2",
+    maxVol: "2",
+    added: "true"
+  },
+  {
+    id: "5",
+    name: "Feed the Homeless 3.0",
+    location: "Downtown Orlando 3.0",
+    miles:"3.6 miles",
+    description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 3.0",
+    numVol: "3",
+    maxVol: "4",
+    added: "true"
+  }
+]
+// const [list, setList] = useState(initialList);
 
 const useStyles = makeStyles({
   root: {
@@ -73,9 +87,23 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
+function handleAdd(prop) {
+  //API call to add task to list
+  initialList.concat({ prop });
+  console.log("Prop: ", prop);
+  // console.log("New List: ", newList);
+
+
+  console.log("initialList: ", initialList);
+  
+  // <VolunteerPage props = initialList/>
+  // setList(newList);
+}
+
 export default function AreaCard(props) {
   const location = useLocation();
-  console.log("location: ", location);
+  let history = useHistory();
+
   // const [selected, setSelected] = useState(false)
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
@@ -93,10 +121,15 @@ export default function AreaCard(props) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <Button className={classes.button} aria-label="add to tasks" variant="contained">
+        <Button className={classes.button} aria-label="add to tasks" variant="contained" key={props.name} onClick={() => 
+        { history.push({
+          pathname: '/volunteer',
+          areaAction: props.name // your data array of objects
+        })}
+        }>
         Add
         </Button>
-        <IconButton aria-label="share">
+        <IconButton className={classes.button} aria-label="share">
           <ShareIcon />
         </IconButton>
         <ExpandMore

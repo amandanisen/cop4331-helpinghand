@@ -76,7 +76,7 @@ export default function Appbar(props) {
                             <ArrowBackIosIcon onClick={() => history.goBack()} />
                         </IconButton >
                         <Typography className={classes.title} variant="h6" noWrap>
-                            Coordinator Test
+                            Coordinator
                         </Typography>
                         <Typography variant="h6" color="inherit">
                             {props.eventName ? props.eventName : null} 
@@ -98,7 +98,7 @@ export default function Appbar(props) {
                             <ArrowBackIosIcon onClick={() => history.goBack()} />
                         </IconButton>
                         <Typography className={classes.title} variant="h6" noWrap>
-                            Test {props.title}
+                            {props.title}
                         </Typography>
                        
                         {/* <AddIcon/> */}

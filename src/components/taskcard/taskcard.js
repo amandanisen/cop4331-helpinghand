@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import ShareIcon from '@mui/icons-material/Share';
 
 const useStyles = makeStyles({
   root: {
@@ -26,12 +31,19 @@ const useStyles = makeStyles({
     margin: '0 2px',
     transform: 'scale(0.8)',
   },
-  title: {
-    fontSize: 14,
-  },
   fab: {
     marginLeft: 'auto',
-  }
+  },
+  title: {
+    fontSize: 22,
+  },
+  locationField:{
+    fontSize: 14
+  },
+  button:{
+    background: "#19AE59",
+    fontSize: 12
+  },
 });
 
 export default function SimpleCard(props) {
@@ -44,70 +56,47 @@ export default function SimpleCard(props) {
     props.handleSelected(props.id);
   }
 
+  const ButtonLeft = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
+
+
   return (
     <>
-      {props.selected
-        ?
-        <Card className={classes.selected} elevation={8} onClick={() => { cardSelect() }}>
-          <CardContent>
-            <Typography variant="h5" component="h2">
-            {props.task.name}
+     <Card sx={{ maxWidth: 345 }} className={classes.root} >
+      <CardHeader
+        title={props.task.name}
+        subheader={<div className={classes.locationField}> <FaMapMarkerAlt/> {props.task.location} - {props.task.miles} </div>}
+      />
+      <CardContent>
+        <Typography variant="body2" color="text.secondary">
+         {props.task.description}
+        </Typography>
+      </CardContent>
+      <CardActions disableSpacing>
+        <Button className={classes.button} aria-label="finish tasks" variant="contained" key={props.task.name} onClick={() => 
+        { }
+        }>
+        Done
+        </Button>
+        <ButtonLeft
+         
+          aria-label="show more"
+        >
+           <Typography color="textSecondary">
+            {props.task.numVol} / {props.task.maxVol}
             </Typography>
-            <Typography variant="body2" component="p">
-              "other card"
-            </Typography>
-            <Typography variant="body2" component="p">
-              "other card"
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={3}>
-              <Grid item xs={2}>
-                <Typography color="textSecondary">
-                  location
-                </Typography>
-              </Grid>
-              <Grid item xs={8}>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography color="textSecondary">
-                  {props.task.current_volunteers+"/"+props.task.volunteer_limit}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-        :
-        <Card className={classes.root} onClick={() => { cardSelect() }} >
-          <CardContent>
-            <Typography variant="h5" component="h2">
-              {props.task.name}
-            </Typography>
-            <Typography variant="body2" component="p">
-              "place holder for task"
-            </Typography>
-            <Typography variant="body2" component="p">
-              "place holder for task"
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={3}>
-              <Grid item xs={2}>
-                <Typography color="textSecondary">
-                  location
-                </Typography>
-              </Grid>
-              <Grid item xs={8}>
-              </Grid>
-              <Grid item xs={2}>
-              <Typography color="textSecondary">
-                  {props.task.current_volunteers+"/"+props.task.volunteer_limit}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      }
+        </ButtonLeft>
+      </CardActions>
+    </Card>
+      
     </>
   );
 }

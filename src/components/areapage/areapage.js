@@ -54,7 +54,7 @@ function AreaPage(props) {
           alignItems="center"
       >
         {areasTest.map((area, index) =>
-          <Grid item key={"area"+area.id} onClick={() => history.push("/volunteer", {area_index: index}) }>
+          <Grid item key={"area"+area.id}  >
             <AreaCard name={area.name} location={area.location} numVol={area.numVol} maxVol={area.maxVol} description={area.description} miles={area.miles}/>
           </Grid>
         )}

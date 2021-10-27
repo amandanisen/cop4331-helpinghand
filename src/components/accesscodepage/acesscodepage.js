@@ -37,7 +37,7 @@ function AccessCodePage(props) {
     console.log(props);
     console.log("Access Code:", accessCode);
     console.log("Full Name:", fullName);
-    props.areaAction("{1, test, 2}");
+    
     history.push("/areas");
     // axios.get('/event/' + location.state.role + "/" + accessCode)
     //   .then((response) => {

@@ -6,12 +6,11 @@ import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { setAreas } from '../../redux/actions';
 
-function VolunteerPage(props) {
+export default function VolunteerPage(props) {
   const location = useLocation();
   const [tasks, setTasks] = useState([]);
   const [selected, setSelected] = useState({});
   let idTrack = useRef(null);
-
 
   useEffect(() => {
     if (props.areas && props.areas.length > 0) {
@@ -28,6 +27,30 @@ function VolunteerPage(props) {
     }
   }, [tasks, selected])
 
+
+  //TODO: CALL API TO GET TASKS WITHIN THAT USER
+  const taskAdded = [
+    {
+      id: "4",
+      name: "Feed the Homeless 2.0",
+      location: "Downtown Orlando 2.0",
+      miles:"2.6 miles",
+      description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 2.0",
+      numVol: "2",
+      maxVol: "2",
+      done: "false"
+    },
+    {
+      id: "5",
+      name: "Feed the Homeless 3.0",
+      location: "Downtown Orlando 3.0",
+      miles:"3.6 miles",
+      description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 3.0",
+      numVol: "3",
+      maxVol: "4",
+      done: "false"
+    }
+  ]
 
   const handleSelect = (id) => {
     let newSelected = { ...selected };
@@ -58,14 +81,14 @@ function VolunteerPage(props) {
 
   return (
     <div>
-      <Appbar type="volunteer" />
+      <Appbar title="Volunteer's Tasks" />
       <Grid
           container
           direction="column"
           justify="space-between"
           alignItems="center"
       >
-        {tasks.map((task) =>
+        {taskAdded.map((task, index) =>
           <Grid item key={"Task"+task.id}>
             <TaskCard selected={selected[task.id]} handleSelected={handleSelect} id={task.id} task={task}/>
           </Grid>
@@ -75,15 +98,16 @@ function VolunteerPage(props) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    areas: state.areas
-  }
-}
+// const mapStateToProps = (state) => {
+//   return {
+    
+//     areas: state
+//   }
+// }
 
-const mapDispatchToProps = { areaAction: setAreas }
+// const mapDispatchToProps = { name: setAreas }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(VolunteerPage)
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(VolunteerPage)

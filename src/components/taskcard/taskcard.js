@@ -84,7 +84,7 @@ export default function SimpleCard(props) {
         <Button className={classes.button} aria-label="finish tasks" variant="contained" key={props.task.name} onClick={() => 
         { }
         }>
-        Done
+        Finished
         </Button>
         <ButtonLeft
          

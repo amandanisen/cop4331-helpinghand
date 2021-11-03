@@ -79,7 +79,7 @@ export default function CreateCoordinator() {
             <img className={classes.image} src="/images/coordinator.jpg"></img>
             </Grid> */}
             <Grid item>
-            <Typography className={classes.welcome} variant="h4" component="h4" align="center">Coordinaor Registration</Typography>
+            <Typography className={classes.welcome} variant="h4" component="h4" align="center">Coordinator Registration</Typography>
             </Grid>
             <Grid item>
               <TextField

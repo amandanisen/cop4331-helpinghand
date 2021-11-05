@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb+srv://root:andrewhasgrayhair@cluster0.w0djj.mongodb.net/project2';
+const checkReg = require('./api/validation/registration.js');
 
 const client = new MongoClient(url);
 client.connect();
@@ -17,6 +18,7 @@ var express = require('express'),
 
 app.use(cors());
 app.use(bodyParser.json());
+
 
 app.listen(port);
 console.log('API server started on: ' + port);
@@ -38,70 +40,106 @@ app.use((req, res, next) =>
 
 app.post('/api/createVolunteer', async(req, res, next) =>
 {
-    // input: email, password, first_name, last_name, accepted_distance, location
-    // output: id, firstname, lastname
-    var error = '';
+    // input: email, password1, password2, first_name, last_name, accepted_distance, location
+    // output: id, firstname, lastname, error
+    let error = {};
     const db = client.db();
 
-    const {email, password, first_name, last_name, accepted_distance, location} = req.body;
-
-    const newVol = {vol_accepted_distance: accepted_distance, vol_email: email, 
-        vol_first_name: first_name, vol_last_name: last_name,
-        vol_location: location, vol_pw: password};
-
-    const emailCheck = await db.collection('volunteer').find({vol_email: email}).toArray();
-
-    if (emailCheck.length > 0)
+    const {email, password1, password2, first_name, last_name, accepted_distance, location} = req.body;
+    const data = 
     {
-        error = 'this email is already in use';
-        const ret = {id: -1, error: error};
-        res.status(200).json(ret);
+        email: email,
+        password1: password1,
+        password2: password2,
+        location: location,
+        accepted_distance: accepted_distance,
+        role: 'Volunteer'
+    };
+    const {errors, isValid} = checkReg.checkRegistrationFields(data);
+    if (!isValid)
+    {
+        res.status(200).json({id: -1, firstname: "", lastname: "", error: errors});
     }
     else
     {
-        const results = await db.collection('volunteer').insertOne(newVol);
-        if (results.length == 0)
+        const newVol = {vol_accepted_distance: accepted_distance, vol_email: email, 
+            vol_first_name: first_name, vol_last_name: last_name,
+            vol_location: location, vol_pw: password1};
+
+        const emailCheck = await db.collection('volunteer').find({vol_email: email}).toArray();
+
+        if (emailCheck.length > 0)
         {
-            error = 'could not insert volunteer';
+            error.email = 'this email is already in use';
+            const ret = {id: -1, error: error};
+            res.status(200).json(ret);
         }
-        const ret = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
-        res.status(200).json(ret);
+        else
+        {
+            const results = await db.collection('volunteer').insertOne(newVol);
+            if (results.length == 0)
+            {
+                error.database = 'could not insert volunteer';
+            }
+            const ret = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
+            res.status(200).json(ret);
+        }
     }
+    
 
 })
 
 app.post('/api/createCoordinator', async(req, res, next) =>
 {
-    // input: firstname, lastname, location, email, password
+    // input: firstname, lastname, location, email, password1, password 2
     // output: id, firstname, lastname
-    var error = '';
+    let error = {};
     const db = client.db();
 
-    const {firstname, lastname, location, email, password} = req.body;
+    const {firstname, lastname, location, email, password1, password2} = req.body;
 
-    const newCoord = {coord_email: email, coord_pw: password, coord_first_name: firstname,
-         coord_last_name: lastname, coord_location: location};
-
-    const emailCheck = await db.collection('coordinator').find({coord_email: email}).toArray();
-    if (emailCheck.length > 0)
+    const data = 
     {
-        error = 'this email is already in use';
-        const ret = {id: -1, error: error};
-        res.status(200).json(ret);
+        email: email,
+        password1: password1,
+        password2: password2,
+        role: 'Coordinator'
+    };
+    const {errors, isValid} = checkReg.checkRegistrationFields(data);
+
+    if (!isValid)
+    {
+        error = errors;
+        res.status(200).json({id: -1, error});
     }
-    else 
+    else
     {
-        const results = await db.collection('coordinator').insertOne(newCoord);
+        const newCoord = {coord_email: email, coord_pw: password, coord_first_name: firstname,
+            coord_last_name: lastname, coord_location: location};
 
-        if (results.length == 0)
+        const emailCheck = await db.collection('coordinator').find({coord_email: email}).toArray();
+        if (emailCheck.length > 0)
         {
-            error = 'could not insert coordinator';
+            error.email = 'this email is already in use';
+            const ret = {id: -1, error: error};
+            res.status(200).json(ret);
         }
-        
-        const ret = {id: results.insertedId, first_name: firstname, last_name: lastname, error: error};
+        else 
+        {
+            const results = await db.collection('coordinator').insertOne(newCoord);
 
-        res.status(200).json(ret);
+            if (results.length == 0)
+            {
+                email.database = 'could not insert coordinator';
+            }
+            
+            const ret = {id: results.insertedId, first_name: firstname, last_name: lastname, error: error};
+
+            res.status(200).json(ret);
+        }
     }
+
+    
     
 })
 

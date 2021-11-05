@@ -92,7 +92,7 @@ app.post('/api/createVolunteer', async(req, res, next) =>
 app.post('/api/createCoordinator', async(req, res, next) =>
 {
     // input: firstname, lastname, location, email, password1, password 2
-    // output: id, firstname, lastname
+    // output: id, firstname, lastname, error
     let error = {};
     const db = client.db();
 
@@ -109,8 +109,7 @@ app.post('/api/createCoordinator', async(req, res, next) =>
 
     if (!isValid)
     {
-        error = errors;
-        res.status(200).json({id: -1, error});
+        res.status(200).json({id: -1, firstname: "", lastname: "",  error: errors});
     }
     else
     {

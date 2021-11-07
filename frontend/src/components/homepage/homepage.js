@@ -76,7 +76,7 @@ export default function HomePage() {
         <img className={classes.image} src="/images/hpimage.svg"></img>
     </Grid>
     <Grid item >
-        <Typography className={classes.welcome} variant="h3" component="h1" align="center">Welcome to TaskMe</Typography>
+        <Typography className={classes.welcome} variant="h3" component="h1" align="center">Welcome to HelpingHand</Typography>
     </Grid>
     <Grid item >
         <Typography className={classes.starter} variant="h4" component="h4" align="center">Let's get started.</Typography>

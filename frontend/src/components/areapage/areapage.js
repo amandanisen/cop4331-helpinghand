@@ -9,7 +9,35 @@ import { useHistory } from "react-router-dom";
 function AreaPage(props) {
   const [areas, setAreas] = useState([]);
   let history = useHistory();
-
+  const areasTest = [
+    {
+      id: "1",
+      name: "Feed the Homeless",
+      location: "Downtown Orlando",
+      miles:"2.5 miles",
+      description: "This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed.",
+      numVol: "5",
+      maxVol: "8"
+    },
+    {
+      id: "2",
+      name: "Concert Cleanup",
+      description: "This is a description of concert cleanup. Need 10 participants to help clean after a concert.",
+      location: "Amway Center",
+      miles:"3 miles",
+      numVol: "1",
+      maxVol: "10"
+    },
+    {
+      id: "3",
+      name: "Set up Tents",
+      description: "This is a description of setting up tents. Need 6 participants.",
+      location: "UCF",
+      miles:"15 miles",
+      numVol: "2",
+      maxVol: "6"
+    }
+  ];
   useEffect(() => {
     if (props.areas) {
       setAreas(props.areas);
@@ -18,16 +46,16 @@ function AreaPage(props) {
 
   return (
     <div>
-      <Appbar title="Volunteer" />
+      <Appbar title="Volunteer Tasks Near You" />
       <Grid
           container
           direction="column"
-          justify="space-between"
+          // justify="space-between"
           alignItems="center"
       >
-        {areas.map((area, index) =>
-          <Grid item key={"area"+area.id}  onClick={() => history.push("/volunteer", {area_index: index}) }>
-            <AreaCard name={area.name}/>
+        {areasTest.map((area, index) =>
+          <Grid item key={"area"+area.id}  >
+            <AreaCard name={area.name} location={area.location} numVol={area.numVol} maxVol={area.maxVol} description={area.description} miles={area.miles}/>
           </Grid>
         )}
       </Grid >
@@ -36,6 +64,7 @@ function AreaPage(props) {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
     areas: state.areas
   }
@@ -47,4 +76,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AreaPage)
-

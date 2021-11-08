@@ -1,7 +1,7 @@
 // TODO: 
 // Check all api input for validity *****ESPECIALLY LOCATION*******
 // Forgot password API
-
+// test
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;

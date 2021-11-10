@@ -7,15 +7,28 @@ const crypto = require("crypto");
 const checkLogin = require('../validation/login');
 const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
-
-// Connect to mongo
-const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://root:andrewhasgrayhair@cluster0.w0djj.mongodb.net/project2';
 const checkReg = require('../validation/registration.js');
 const ifEmpty = require("../validation/checkForEmpty");
 
+// Connect to mongo
+require('dotenv').config();
+const url = process.env.MONGODB_URI;
+const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url);
 client.connect();
+
+const app_name = 'helpinghand-cop4331';
+function buildPath(route)
+{
+    if (process.env.NODE_ENV === 'production') 
+    {
+        return 'https://' + app_name +  '.herokuapp.com/' + route;
+    }
+    else
+    {        
+        return 'http://localhost:5000/' + route;
+    }
+}
 
 router.use((req, res, next) => 
 {
@@ -145,9 +158,6 @@ router.post('/login', async(req, res) =>
     
     var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
 
-    var id = -1;
-    var fn = '';
-    var ln = '';
     
     if (!ifEmpty(results))
     {
@@ -177,37 +187,5 @@ router.post('/login', async(req, res) =>
     }
     
 })
-
-/*
-router.post('/api/forgotPassword', async(req, res) =>
-{
-    // input: email
-    // output: error
-    var error = '';
-
-    const {email} = req.body;
-    const db = client.db();
-
-    const volCheck = await db.collection('volunteer').find({vol_email: email}).toArray();
-    const coordCheck = await db.collection('coordinator').find({coord_email: email}).toArray();
-
-    if (volCheck.length == 0 && coordCheck.length == 0)
-    {
-        error = 'email does not exist in the system';
-    }
-    else
-    {
-        if (volCheck.length > 0)
-        {
-            // Volunteer forgot pass
-        }
-
-        if (coordCheck.length > 0)
-        {
-            // Coordinator forgot pass
-        }
-    }
-})
-*/
 
 module.exports = router;

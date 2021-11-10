@@ -6,11 +6,11 @@ const crypto = require("crypto");
 const checkLogin = require('../validation/login');
 const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
+const checkReg = require('../validation/registration.js');
 
 // Connect to mongo
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb+srv://root:andrewhasgrayhair@cluster0.w0djj.mongodb.net/project2';
-const checkReg = require('../validation/registration.js');
 const { builtinModules } = require("module");
 
 const client = new MongoClient(url);

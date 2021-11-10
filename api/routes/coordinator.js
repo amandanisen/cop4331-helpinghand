@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const checkRegistrationFields = require("../validation/registration");
 const checkLogin = require('../validation/login');
 const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
@@ -55,7 +54,7 @@ router.post('/register', async(req, res) =>
     if (!isValid)
     {
         // break if input isn't valid
-        return res.status(200).json({id: -1, firstname: "", lastname: "",  error: errors});
+        return res.status(400).json({id: -1, firstname: "", lastname: "",  error: errors});
     }
     
     // check to see if email has already been used
@@ -121,6 +120,13 @@ router.post('/login', async(req, res) =>
     var error = '';
     const db = client.db();
     const {email, password} = req.body;
+
+    // Check if input is valid
+    const validity = checkLogin(req.body);
+    if (!validity.isValid)
+    {
+        return res.status(400).json(validity.errors);
+    }
 
     // ensure that the email exists & has been verified
     var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});

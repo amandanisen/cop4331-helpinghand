@@ -12,7 +12,8 @@ import AdminLink from './components/links/adminLink.js'
 import { makeStyles } from '@material-ui/core/styles';
 import AreaPage from "./components/areapage/areapage.js"
 import TaskRegistration from "./components/taskform/taskform.js"
-
+import CreateVolunteer from "./components/createVolunteer/createVolunteer.js"
+import CreateCoordinator from "./components/createCoordinator/createCoordinator.js"
 
 
 import {
@@ -39,6 +40,12 @@ function App() {
           </Route>
           <Route path="/areas">
             <AreaPage />
+          </Route>
+          <Route path="/createCoordinator">
+            <CreateCoordinator />
+          </Route>
+          <Route path="/createVolunteer">
+            <CreateVolunteer />
           </Route>
           <Route path="/event">
             <EventRegistrationForm />

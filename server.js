@@ -10,8 +10,13 @@ const volRoutes = require('./api/routes/volunteer');
 const coordRoutes = require('./api/routes/coordinator');
 const taskRoutes = require('./api/routes/task');
 
-var express = require('express'),
-  app = express();
+var express = require('express');
+
+const path = require('path');
+const port = process.env.PORT || 5000;
+const app = express();
+
+app.set('port', (port))
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,7 +27,6 @@ app.use("/vol", volRoutes);
 app.use("/coord", coordRoutes);
 app.use("/task", taskRoutes);
 
-const port = process.env.PORT || 3000;
 
 // express returns an HTTP server
 app.listen(port, () => console.log("[Server] on port " + port + " online " + new Date()));

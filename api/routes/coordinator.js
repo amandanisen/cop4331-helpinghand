@@ -48,22 +48,24 @@ router.post('/register', async(req, res) =>
         role: 'Coordinator'
     };
 
+    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}};
+
     // check validity of input
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
 
     if (!isValid)
     {
-        // break if input isn't valid
-        return res.status(400).json({id: -1, firstname: "", lastname: "",  error: errors});
+        responsePackage.error = errors;
+        return res.status(400).json(responsePackage);
     }
     
     // check to see if email has already been used
     const emailCheck = await db.collection('coordinator').find({coord_email: email}).toArray();
     if (emailCheck.length > 0)
     {
-        error.email = 'this email is already in use';
-        const ret = {id: -1, error: error};
-        return res.status(200).json(ret);
+        responsePackage.error.email = 'this email is already in use';
+        
+        return res.status(200).json(responsePackage);
     }
 
     // generate random token for email verification
@@ -88,10 +90,11 @@ router.post('/register', async(req, res) =>
 
             if (results.length == 0)
             {
-                error.database = 'could not insert coordinator';
-                return res.status(400).json({id: -1, first_name: '', last_name: '', error: error});
+                responsePackage.error.database = 'could not insert coordinator';
+                return res.status(400).json(responsePackage);
             }
-            const ret = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: {}};
+            
 
             // Send verification email
             let to = [newCoord.coord_email];
@@ -107,7 +110,7 @@ router.post('/register', async(req, res) =>
             sendEmail.Email(to, sub, content);
 
             // After successful email sending, return json data for user
-            return res.status(200).json(ret);
+            return res.status(200).json(responsePackage);
         })
     })
 })

@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
@@ -6,6 +6,8 @@ import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+
+const buildPath = require('../../redux/buildPath');
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,8 +65,52 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateVolunteer() {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [location, setLocation] = useState('');
+    const [distance, setDistance] = useState(0);
+    const [message, setMessage] = useState('');
+
     const classes = useStyles();
     let history = useHistory();
+
+    async function handleRegistration(event)
+    {
+        event.preventDefault();
+        var obj = {email: email, password1: password1, password2: password2, first_name: firstName, 
+            last_name: lastName, location: location, accepted_distance: distance};
+
+        var js = JSON.stringify(obj);
+
+        try
+        {
+            const response = await fetch(buildPath('/vol/register'), {method: 'POST',
+                body: js, headers:{'Content-Type':'application/json'}});
+
+            var res = JSON.parse(await response.text());
+
+            if (res.id == -1)
+            {
+                alert(res.error);
+            }
+            else
+            {
+                var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
+                localStorage.setItem('user_data', JSON.stringify(user));
+
+                setMessage('');
+                history.push('/areas');
+            }
+        }
+        catch(e)
+        {
+            alert(e.toString());
+            return;
+        }
+    }
     return (
         <div>
             <Appbar title="Volunteer" type="Volunteer"/>
@@ -84,10 +130,20 @@ export default function CreateVolunteer() {
               <TextField
                 required
                 id="filled-bare"
-                placeholder={"Full Name"}
+                placeholder={"First Name"}
                 margin="normal"
                 variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
+                onChange={(e)=> setFirstName(e.target.value)}
+               />
+            </Grid>
+            <Grid item>
+              <TextField
+                required
+                id="filled-bare"
+                placeholder={"Last Name"}
+                margin="normal"
+                variant="filled"
+                onChange={(e)=> setLastName(e.target.value)}
                />
             </Grid>
             <Grid item>
@@ -97,7 +153,7 @@ export default function CreateVolunteer() {
                 placeholder={"Email"}
                 margin="normal"
                 variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
+                onChange={(e)=> setEmail(e.target.value)}
                />
             </Grid>
             <Grid item>
@@ -107,7 +163,17 @@ export default function CreateVolunteer() {
                 placeholder={"Password"}
                 margin="normal"
                 variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
+                onChange={(e)=> setPassword1(e.target.value)}
+               />
+            </Grid>
+            <Grid item>
+              <TextField
+                required
+                id="filled-bare"
+                placeholder={"Confirm Password"}
+                margin="normal"
+                variant="filled"
+                onChange={(e)=> setPassword2(e.target.value)}
                />
             </Grid>
             <Grid item>
@@ -117,7 +183,7 @@ export default function CreateVolunteer() {
                 placeholder={"Location"}
                 margin="normal"
                 variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
+                onChange={(e)=> setLocation(e.target.value)}
                />
             </Grid>
             <Grid item>
@@ -127,13 +193,13 @@ export default function CreateVolunteer() {
                 placeholder={"Minimum distance of task"}
                 margin="normal"
                 variant="filled"
-                //onChange={(e)=> setFullName(e.target.value)}
+                onChange={(e)=> setDistance(e.target.value)}
                />   
             </Grid>
             <Grid item>
             <Button 
                 className={classes.smallbutton}
-                onClick={()=> history.push("/volunteerpage", {role: ""})}>Submit
+                onClick={handleRegistration}>Submit
             </Button>
             </Grid>
             </Grid>

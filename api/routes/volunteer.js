@@ -38,7 +38,7 @@ router.use((req, res, next) =>
 router.post('/register', async(req, res) =>
 {
     // input: email, password1, password2, first_name, last_name, accepted_distance, location
-    // output: id, firstname, lastname, error
+    // output: id, first_name, last_name, error
     let error = {};
     const db = client.db();
 
@@ -52,19 +52,21 @@ router.post('/register', async(req, res) =>
         accepted_distance: accepted_distance,
         role: 'Volunteer'
     };
+    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}}
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
     if (!isValid)
     {
-        return res.status(400).json({id: -1, firstname: "", lastname: "", error: errors});
+        responsePackage.error = errors;
+        return res.status(400).json(responsePackage);
     }
 
     const emailCheck = await db.collection('volunteer').find({vol_email: email}).toArray();
 
     if (emailCheck.length > 0)
     {
-        error.email = 'this email is already in use';
-        const ret = {id: -1, error: error};
-        return res.status(400).json(ret);
+        responsePackage.error.email = 'this email is already in use';
+        
+        return res.status(400).json(responsePackage);
     }
 
     var token;
@@ -88,7 +90,7 @@ router.post('/register', async(req, res) =>
                 error.database = 'could not insert volunteer';
                 return res.status(400).json({id: -1, first_name: '', last_name: '', error: error});
             }
-            const ret = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
 
             let to = [newVol.vol_email];
 
@@ -102,7 +104,7 @@ router.post('/register', async(req, res) =>
                 ">Verify email</a></body>";
             sendEmail.Email(to, sub, content);
 
-            return res.status(200).json(ret);
+            return res.status(200).json(responsePackage);
         })
     })
 })

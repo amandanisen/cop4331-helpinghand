@@ -63,7 +63,43 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+
+
 export default function CreateCoordinator() {
+    /*
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        var obj = {email: email, password: password};
+        var js = JSON.stringify(obj);
+
+        try
+        {
+            const response = await fetch(buildPath('/coord/register'), {method: 'POST',
+            body: js, headers:{'Content-Type':'application/json'}});
+
+            var res = JSON.parse(await response.text());
+            if (res.id < 0)
+            {
+            setMessage(res.error);
+            }
+            else
+            {
+            var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
+            localStorage.setItem('user_data', JSON.stringify(user));
+
+            setMessage('');
+            history.push('/areas');
+            }
+        }
+        catch (e)
+        {
+            alert(e.toString());
+            return;
+        }
+    };
+    */
+
     const classes = useStyles();
     let history = useHistory();
     return (
@@ -106,6 +142,16 @@ export default function CreateCoordinator() {
                 required
                 id="filled-bare"
                 placeholder={"Password"}
+                margin="normal"
+                variant="filled"
+                //onChange={(e)=> setFullName(e.target.value)}
+               />
+            </Grid>
+            <Grid item>
+              <TextField
+                required
+                id="filled-bare"
+                placeholder={"Confirm Password"}
                 margin="normal"
                 variant="filled"
                 //onChange={(e)=> setFullName(e.target.value)}

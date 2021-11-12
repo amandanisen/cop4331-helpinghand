@@ -53,9 +53,6 @@ function AccessCodePage(props) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(props);
-    console.log("Email:", email);
-    console.log("Password:", password);
 
     var obj = {email: email, password: password};
     var js = JSON.stringify(obj);
@@ -66,14 +63,12 @@ function AccessCodePage(props) {
         body: js, headers:{'Content-Type':'application/json'}});
 
       var res = JSON.parse(await response.text());
-      console.log(res);
       if (res.id < 0)
       {
         setMessage(res.error);
       }
       else
       {
-        console.log('successful login');
         var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
         localStorage.setItem('user_data', JSON.stringify(user));
 

@@ -12,14 +12,14 @@ import Avatar from '@material-ui/core/Avatar';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-
-
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 import { connect } from "react-redux";
 import { setAreas } from '../../redux/actions.js';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+
+const buildPath = require('../../redux/buildPath');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,19 +45,48 @@ const useStyles = makeStyles((theme) => ({
 function AccessCodePage(props) {
   const classes = useStyles();
   const location = useLocation();
+  
   let history = useHistory();
-  const [accessCode, setAccessCode] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     console.log(props);
-    console.log("Access Code:", accessCode);
-    console.log("Full Name:", fullName);
-    
-    history.push("/areas");
+    console.log("Email:", email);
+    console.log("Password:", password);
 
-  }
+    var obj = {email: email, password: password};
+    var js = JSON.stringify(obj);
+
+    try
+    {
+      const response = await fetch(buildPath('/vol/login'), {method: 'POST',
+        body: js, headers:{'Content-Type':'application/json'}});
+
+      var res = JSON.parse(await response.text());
+      console.log(res);
+      if (res.id < 0)
+      {
+        setMessage(res.error);
+      }
+      else
+      {
+        console.log('successful login');
+        var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
+        localStorage.setItem('user_data', JSON.stringify(user));
+
+        setMessage('');
+        history.push('/areas');
+      }
+    }
+    catch (e)
+    {
+      alert(e.toString());
+      return;
+    }
+  };
   
     return (
       <>
@@ -99,6 +128,7 @@ function AccessCodePage(props) {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange = {(event) => setEmail(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -109,6 +139,7 @@ function AccessCodePage(props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange = {(event) => setPassword(event.target.value)}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

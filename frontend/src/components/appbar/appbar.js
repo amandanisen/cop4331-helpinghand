@@ -58,7 +58,6 @@ export default function Appbar(props) {
 
     let appbarType = props;
     let appBarName;
-    console.log("Props type: ", props.title);
     if(props.title === "Coordinator"){
         appBarName = "Coordinator";
     }else if(props.type === "Volunteer"){

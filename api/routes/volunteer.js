@@ -10,6 +10,7 @@ const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const ifEmpty = require("../validation/checkForEmpty");
 
+
 // Connect to mongo
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
@@ -17,18 +18,7 @@ const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url);
 client.connect();
 
-const app_name = 'helpinghand-cop4331';
-function buildPath(route)
-{
-    if (process.env.NODE_ENV === 'production') 
-    {
-        return 'https://' + app_name +  '.herokuapp.com/' + route;
-    }
-    else
-    {        
-        return 'http://localhost:5000/' + route;
-    }
-}
+
 
 router.use((req, res, next) => 
 {
@@ -145,15 +135,17 @@ router.post('/login', async(req, res) =>
 {
     // input: email, password
     // output: id, firstName, lastName, error
-    var error = '';
     const db = client.db();
     const {email, password} = req.body;
+
+    var responsePackage = {id: -1, email: '', first_name: '', last_name: '', errors: {}};
 
     const validate = checkLogin.checkLoginFields({email: email, password: password});
 
     if (!validate.isValid)
     {
-        return res.status(400).json(validate.errors);
+        responsePackage.errors = validate.errors;
+        return res.status(400).json(responsePackage);
     }
     
     var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
@@ -163,27 +155,31 @@ router.post('/login', async(req, res) =>
     {
         await bcrypt.compare(password, results.vol_pw).then(isMatch => {
             if (isMatch) {
-                const payload = {id: results._id, email: results.vol_email, first_name: results.vol_first_name,
-                     last_name: results.vol_last_name};
+                responsePackage.id = results._id;
+                responsePackage.first_name = results.vol_first_name;
+                responsePackage.last_name = results.vol_last_name;
+                responsePackage.email = results.vol_email;
+                
                 jwt.sign(
-                    payload,
+                    responsePackage,
                     key.secretOrKey,
                     {expiresIn: 3600},
                     (err, token) => {
-                        return res.status(200).json(payload);
+                        return res.status(200).json(responsePackage);
                     }
                 );
                 return;
             
             } else {
-                return res.status(400).json("Wrong password");
+                responsePackage.errors.password = "Wrong password";
+                return res.status(400).json(responsePackage);
             }
         });
     }
     else
     {
-        error = 'Invalid username/password';
-        return res.status(400).json({id: -1, firstName: '', lastName: '', error: error});
+        responsePackage.errors.email = 'Invalid username/password';
+        return res.status(400).json(responsePackage);
     }
     
 })

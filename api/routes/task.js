@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const checkRegistrationFields = require("../validation/registration");
 
+
 // Connect to mongo
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
@@ -11,18 +12,7 @@ const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url);
 client.connect();
 
-const app_name = 'helpinghand-cop4331';
-function buildPath(route)
-{
-    if (process.env.NODE_ENV === 'production') 
-    {
-        return 'https://' + app_name +  '.herokuapp.com/' + route;
-    }
-    else
-    {        
-        return 'http://localhost:5000/' + route;
-    }
-}
+
 
 router.use((req, res, next) => 
 {

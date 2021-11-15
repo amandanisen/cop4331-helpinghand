@@ -14,6 +14,8 @@ import AreaPage from "./components/areapage/areapage.js"
 import TaskRegistration from "./components/taskform/taskform.js"
 import CreateVolunteer from "./components/createVolunteer/createVolunteer.js"
 import CreateCoordinator from "./components/createCoordinator/createCoordinator.js"
+import VerifyVol from "./components/verify/verifyVol.js";
+import Forgot from "./components/forgotpassword/forgot";
 
 
 import {
@@ -38,8 +40,14 @@ function App() {
             <VolunteerLogin/>
             {/* <AccessCodePage /> */}
           </Route>
+          <Route path="/forgot">
+            <Forgot/>
+          </Route>
           <Route path="/areas">
             <AreaPage />
+          </Route>
+          <Route path="/vol/verify/">
+            <VerifyVol />
           </Route>
           <Route path="/createCoordinator">
             <CreateCoordinator />

@@ -42,13 +42,14 @@ router.post('/register', async(req, res) =>
     let error = {};
     const db = client.db();
 
-    const {email, password1, password2, first_name, last_name, accepted_distance, location} = req.body;
+    const {email, password1, password2, first_name, last_name, accepted_distance, longitude, latitude} = req.body;
     const data = 
     {
         email: email,
         password1: password1,
         password2: password2,
-        location: location,
+        longitude: longitude, 
+        latitude: latitude,
         accepted_distance: accepted_distance,
         role: 'Volunteer'
     };
@@ -79,6 +80,7 @@ router.post('/register', async(req, res) =>
 
         bcrypt.hash(data.password1, salt, async (err, hash) => {
             if (err) throw err;
+            const location = {type: "Point", coordinates: [longitude, latitude]};
             const newVol = {vol_accepted_distance: accepted_distance, vol_email: email, 
                     vol_first_name: first_name, vol_last_name: last_name, token: token,
                     vol_location: location, vol_pw: hash, email_verified: "f",
@@ -111,10 +113,8 @@ router.post('/register', async(req, res) =>
 
 // Verify Volunteer email
 router.post('/verify/:token', async(req, res) => {
-    console.log("running verify");
     const {token} = req.params;
     const db = client.db();
-    const errors = {};
 
     const results = await db.collection('volunteer').find({token: token, token_used: 'f'})
 
@@ -184,6 +184,85 @@ router.post('/login', async(req, res) =>
         return res.status(400).json(responsePackage);
     }
     
+})
+
+// Forgot password
+router.post('/forgot', async(req, res) =>
+{
+    // input: email
+    // response: boolean (email sent), error
+    const {email} = req.body;
+    const db = client.db();
+    var responsePackage = {success: false, error: {}};
+
+    const emailCheck = await db.collection('volunteer').find({vol_email: email, email_verified: "t"});
+
+    if (!ifEmpty(emailCheck))
+    {
+        let resetToken;
+        resetToken = crypto.randomBytes(20).toString("hex");
+        await db.collection('volunteer').updateOne({vol_email: email}, {$set: {password_token: resetToken,
+            password_token_used: "f"}});
+
+        let to = [email];
+
+        let sub = "Reset password";
+
+        let link = "https://localhost:3000/vol/reset/" + resetToken;
+
+        let content = 
+            "<body><p>Click the link to reset your password</p> <a href=" + 
+            link + 
+            ">Reset</a></body>";
+        sendEmail.Email(to, sub, content);
+        responsePackage.success = true;
+        return res.status(200).json(responsePackage);
+
+    }
+    else
+    {
+        responsePackage.error.email = "This email does not exist or has not been verified";
+        return res.status(400).json(responsePackage);
+    }
+})
+
+router.post('/reset/:token', async(req, res) =>
+{
+    const db = client.db();
+    const {token} = req.params;
+    var responsePackage = {};
+
+    const checkExistence = await db.collection('volunteer').find({password_token: token,
+        password_token_used: "f"});
+
+    if (!ifEmpty(checkExistence))
+    {
+        bcrypt.genSalt(12, async(err, salt) =>
+        {
+            if (err) throw err;
+            bcrypt.hash(req.body.password1, salt, async(err, hash) =>
+            {
+                if (err) throw err;
+                const update = await db.collection('volunteer').updateOne({password_token: token}, {vol_pw: hash,
+                    password_token_used: "t"});
+                if (update.modifiedCount > 0)
+                {
+                    const to = [checkExistence.vol_email];
+                    const sub = "Password changed for your account";
+                    const txt = `The password for your account registered under ${
+                        checkExistence.vol_email
+                      } has been successfully changed.`;
+                    sendEmail.Email(to, sub, txt);
+                    res.json("Password successfully changed");
+                }
+            })
+        })
+    }
+    else
+    {
+        responsePackage.error = "invalid token";
+        return res.status(400).json(responsePackage);
+    }
 })
 
 module.exports = router;

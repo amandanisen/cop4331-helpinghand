@@ -70,7 +70,8 @@ export default function CreateVolunteer() {
     const [email, setEmail] = useState('');
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
-    const [location, setLocation] = useState('');
+    const [longitude, setLongitude] = useState(0);
+    const [latitude, setLatitude] = useState(0);
     const [distance, setDistance] = useState(0);
     const [message, setMessage] = useState('');
 
@@ -81,7 +82,7 @@ export default function CreateVolunteer() {
     {
         event.preventDefault();
         var obj = {email: email, password1: password1, password2: password2, first_name: firstName, 
-            last_name: lastName, location: location, accepted_distance: distance};
+            last_name: lastName, longitude: longitude, latitude: latitude, accepted_distance: distance};
 
         var js = JSON.stringify(obj);
 
@@ -94,7 +95,7 @@ export default function CreateVolunteer() {
 
             if (res.id == -1)
             {
-                alert(res.error);
+                alert(JSON.stringify(res.error));
             }
             else
             {
@@ -102,7 +103,7 @@ export default function CreateVolunteer() {
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                history.push('/areas');
+                history.push('/');
             }
         }
         catch(e)
@@ -180,10 +181,20 @@ export default function CreateVolunteer() {
               <TextField
                 required
                 id="filled-bare"
-                placeholder={"Location"}
+                placeholder={"Longitude"}
                 margin="normal"
                 variant="filled"
-                onChange={(e)=> setLocation(e.target.value)}
+                onChange={(e)=> setLongitude(e.target.value)}
+               />
+            </Grid>
+            <Grid item>
+              <TextField
+                required
+                id="filled-bare"
+                placeholder={"Latitude"}
+                margin="normal"
+                variant="filled"
+                onChange={(e)=> setLatitude(e.target.value)}
                />
             </Grid>
             <Grid item>

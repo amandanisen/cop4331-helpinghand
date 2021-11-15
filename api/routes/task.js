@@ -71,7 +71,6 @@ router.post('/find', async(req, res) =>
       }
     }
   }).toArray();
-  console.log(results);
   res.status(200).json(results);
 })
 

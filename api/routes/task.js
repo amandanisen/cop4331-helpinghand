@@ -44,7 +44,8 @@ router.post('/create', async(req, res) =>
     const location = {type: "Point", coordinates: [req.body.longitude, req.body.latitude]};
 
     const newTask = {task_name: name, task_description: description, 
-        task_date: date, max_slots: max_slots, task_location: location, slots_available: max_slots};
+        task_date: date, max_slots: max_slots, task_location: location, slots_available: max_slots,
+        vol_arr: []};
     
     const db = client.db();
     const result = await db.collection('tasks').insertOne(newTask);
@@ -72,6 +73,14 @@ router.post('/find', async(req, res) =>
     }
   }).toArray();
   res.status(200).json(results);
+})
+
+router.post('/addVol', async(req, res) =>
+{
+
+  const db = client.db();
+  const {id} = req.body;
+
 })
 
 module.exports = router;

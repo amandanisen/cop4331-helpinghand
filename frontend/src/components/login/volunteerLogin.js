@@ -85,7 +85,7 @@ function AccessCodePage(props) {
   
     return (
       <>
-        <Appbar title={location.state.role} />
+        <Appbar title={"Volunteer"} />
         <form onSubmit={handleSubmit}>
         <Grid
         container

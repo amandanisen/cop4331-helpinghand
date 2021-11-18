@@ -17,6 +17,7 @@ import { IconContext } from 'react-icons';
 import { useState } from 'react';
 import './appbar.css';
 import { SidebarData } from '../sidebar/SidebarData.js';
+import Button from 'react-bootstrap/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -70,51 +71,6 @@ export default function Appbar(props) {
     const showSidebar = () => setSidebar(!sidebar);
     
     return (
-        <>
-            {(props.type === "Coordinator")
-                ? 
-                <AppBar position="static" >
-                    <Toolbar variant="dense" className={classes.root}>
-                    <IconContext.Provider value={{ color: '#fff' }}>
-                <div className='navbar'>
-                  <Link to='#' className='menu-bars'>
-                    <FaIcons.FaBars onClick={showSidebar} />
-                  </Link>
-                </div>
-                <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-                  <ul className='nav-menu-items' onClick={showSidebar}>
-                    <li className='navbar-toggle'>
-                      <Link to='#' className='menu-bars'>
-                        <AiIcons.AiOutlineClose />
-                      </Link>
-                    </li>
-                    {SidebarData.map((item, index) => {
-                      return (
-                        <li key={index} className={item.cName}>
-                          <Link to={item.path}>
-                            {item.icon}
-                            <span>{item.title}</span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </nav>
-              </IconContext.Provider>
-              
-            <Typography className={classes.title} variant="h6" noWrap>Coordinator</Typography>
-                    <IconButton
-                    alginSelf= 'flex-end' 
-                    edge="end"
-                    className={classes.menuButton}
-                    color="inherit"
-                    aria-label="open drawer"
-                >
-                     <ArrowBackIosIcon onClick={() => history.goBack()} />
-                </IconButton>
-                </Toolbar>
-            </AppBar>
-            :
             <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
             <IconContext.Provider value={{ color: '#fff' }}>
@@ -130,7 +86,9 @@ export default function Appbar(props) {
                     <AiIcons.AiOutlineClose />
                   </Link>
                 </li>
-                {SidebarData.map((item, index) => {
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                {/* {SidebarData.map((item, index) => {
                   return (
                     <li key={index} className={item.cName}>
                       <Link to={item.path}>
@@ -139,13 +97,13 @@ export default function Appbar(props) {
                       </Link>
                     </li>
                   );
-                })}
+                })} */}
               </ul>
             </nav>
           </IconContext.Provider>
    
              <Typography className={classes.title} variant="h6" noWrap>
-                         Volunteer
+                         Homepage
                      </Typography>
                      <IconButton
                       alginSelf= 'flex-end' 
@@ -158,8 +116,6 @@ export default function Appbar(props) {
                   </IconButton>
                  </Toolbar>
              </AppBar>
-           }
 
-       </>
     );
 }

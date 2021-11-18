@@ -206,7 +206,7 @@ router.post('/forgot', async(req, res) =>
 
         let sub = "Reset password";
 
-        let link = "https://localhost:3000/vol/reset/" + resetToken;
+        let link = buildPath('/vol/reset/') + resetToken;
 
         let content = 
             "<body><p>Click the link to reset your password</p> <a href=" + 
@@ -376,6 +376,40 @@ router.get('/getTasks', async(req, res) =>
     console.log(taskArr);
 
     res.status(200).json(taskArr);
+})
+
+router.post('/edit', async(req, res) =>
+{
+    const {first_name, last_name, location, accepted_distance, userID} = req.body;
+
+    if (!ifEmpty(location))
+        await db.collection('volunteer').updateOne({_id: userID},
+        {
+            $set: {
+                vol_location: location
+            }
+        });
+    if (!ifEmpty(accepted_distance))
+        await db.collection('volunteer').updateOne({_id: userID},
+        {
+            $set: {
+                vol_accepted_distance: accepted_distance
+            }
+        });
+    if (!ifEmpty(first_name))
+        await db.collection('volunteer').updateOne({_id: userID},
+        {
+            $set:{
+                vol_first_name: first_name
+            }
+        });
+    if (!ifEmpty(last_name))
+        await db.collection('volunteer').updateOne({_id: userID},
+        {
+            $set:{
+                vol_last_name: last_name
+            }
+        });
 })
 
 module.exports = router;

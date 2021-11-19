@@ -65,7 +65,7 @@ router.post('/register', async(req, res) =>
     {
         responsePackage.error.email = 'this email is already in use';
         
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
 
     var token;
@@ -115,18 +115,24 @@ router.get('/verify/:token', async(req, res) => {
     const db = client.db();
 
     const results = await db.collection('volunteer').find({token: token, token_used: 'f'})
+    var responsePackage = {success: false, error};
 
     if (results.length == 0)
     {
         const emailVerify = await db.collection('volunteer').find({token: token, email_verified: "t"}).toArray();
         if (!ifEmpty(emailVerify))
-            return res.json("Email has already been verified!");
-        return res.json("Verification token invalid");
+        {
+            responsePackage.error = "Email has already been verified";
+            responsePackage.success = true;
+            return res.status(200).json(responsePackage);
+        }
+        responsePackage.error = "Verification token invalid";
+        return res.status(200).json(responsePackage);
     }
 
     const update = await db.collection('volunteer').updateOne({token: token},{$set : {email_verified: "t", token_used: "t"}});
-
-    return res.json("Email verified! Please login to your account");
+    responsePackage.success = true;
+    return res.status(200).json(responsePackage);
 
 })
 
@@ -172,14 +178,14 @@ router.post('/login', async(req, res) =>
             
             } else {
                 responsePackage.errors.password = "Wrong password";
-                return res.status(400).json(responsePackage);
+                return res.status(200).json(responsePackage);
             }
         });
     }
     else
     {
         responsePackage.errors.email = 'Invalid username/password';
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
     
 })
@@ -220,7 +226,7 @@ router.post('/forgot', async(req, res) =>
     else
     {
         responsePackage.error.email = "This email does not exist or has not been verified";
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
 })
 
@@ -259,21 +265,21 @@ router.post('/reset/:token', async(req, res) =>
     else
     {
         responsePackage.error = "invalid token";
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
 })
 
 router.post('/addTask', async(req, res) =>
 {
-    
     // Input: userID, taskID
     const db = client.db();
     const {userID, taskID} = req.body;
     const fill = await db.collection('tasks').findOne({_id: taskID});
-
+    var responsePackage = {success: true, error};
     if (!ifEmpty(fill) && fill.slots_available > 0)
     {
         let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: taskID}});
+        
         
         if (ifEmpty(alreadyInList))
         {
@@ -298,21 +304,25 @@ router.post('/addTask', async(req, res) =>
             );
             if (!ifEmpty(update) && !ifEmpty(taskUpdate))
             {
-                res.status(200).json("Task added to user " + userID);
+                res.status(200).json(responsePackage);
             }
             else
             {
-                res.status(400).json("Task could not be added");
+                responsePackage.error = "Task could not be added";
+                res.status(200).json(responsePackage);
             }
         }
         else
         {
-            res.status(400).json("Already signed up for task");
+            responsePackage.error = "Already signed up for task"
+            res.status(200).json(responsePackage);
         }
     }
     else
     {
-        res.status(400).json("Task is already full")
+        responsePackage.success = false;
+        responsePackage.error = "Task is full";
+        res.status(200).json(responsePackage);
     }
     
 })
@@ -322,7 +332,7 @@ router.post('/removeTask', async(req, res) =>
     // Input: userID, taskID
     const db = client.db();
     const {userID, taskID} = req.body;
-
+    var responsePackage = {success: true, error};
     const task = await db.collection('tasks').find({_id: taskID, vol_arr: {$eq: userID}});
 
     if (!ifEmpty(task))
@@ -345,13 +355,17 @@ router.post('/removeTask', async(req, res) =>
 
         if (ifEmpty(volUpdate) || ifEmpty(taskUpdate))
         {
-            res.status(400).json("Could not update lists");
+            responsePackage.error = "Could not update document";
+            responsePackage.success = false;
+            res.status(200).json(responsePackage);
         }
-        else res.status(200).json("Lists updated");
+        else res.status(200).json(responsePackage);
     }
     else
     {
-        res.status(400).json("Task with this ID doesn't exist/user hasn't signed up for task");
+        responsePackage.success = false;
+        responsePackage.error = "Task with this ID doesn't exist/user hasn't signed up for task";
+        res.status(200).json(responsePackage);
     }
 })
 
@@ -410,6 +424,7 @@ router.post('/edit', async(req, res) =>
                 vol_last_name: last_name
             }
         });
+    res.status(200).json({success: true});
 })
 
 module.exports = router;

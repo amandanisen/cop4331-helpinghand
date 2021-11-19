@@ -131,6 +131,7 @@ router.post('/login', async(req, res) =>
     {
         return res.status(400).json(validity.errors);
     }
+    var responsePackage = {id: -1, first_name: '', last_name: '', error};
 
     // ensure that the email exists & has been verified
     var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
@@ -152,14 +153,15 @@ router.post('/login', async(req, res) =>
                 );
                 return;
             } else {
-                return res.status(400).json("Wrong password");
+                responsePackage.error = "Wrong password";
+                return res.status(200).json(responsePackage);
             }
         });
     }
     else
     {
-        error = 'Invalid username/password';
-        return res.status(400).json({id: -1, firstName: '', lastName: '', error: error});
+        responsePackage.error = 'Invalid username/password';
+        return res.status(200).json(responsePackage);
     }
 })
 

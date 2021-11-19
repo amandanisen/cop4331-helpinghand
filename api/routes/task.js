@@ -75,12 +75,4 @@ router.post('/find', async(req, res) =>
   res.status(200).json(results);
 })
 
-router.post('/addVol', async(req, res) =>
-{
-
-  const db = client.db();
-  const {id} = req.body;
-
-})
-
 module.exports = router;

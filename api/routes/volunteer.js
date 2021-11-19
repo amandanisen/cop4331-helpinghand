@@ -238,6 +238,13 @@ router.post('/reset/:token', async(req, res) =>
 
     const checkExistence = await db.collection('volunteer').find({password_token: token,
         password_token_used: "f"});
+    
+    if (req.body.password1 != req.body.password2)
+    {
+        responsePackage.success = false;
+        responsePackage.error = "Passwords do not match";
+        return res.status(400).json(responsePackage);
+    }
 
     if (!ifEmpty(checkExistence))
     {
@@ -257,7 +264,8 @@ router.post('/reset/:token', async(req, res) =>
                         checkExistence.vol_email
                       } has been successfully changed.`;
                     sendEmail.Email(to, sub, txt);
-                    res.json("Password successfully changed");
+                    responsePackage.success = true;
+                    return res.status(200).json(responsePackage);
                 }
             })
         })
@@ -265,6 +273,7 @@ router.post('/reset/:token', async(req, res) =>
     else
     {
         responsePackage.error = "invalid token";
+        responsePackage.success = false;
         return res.status(200).json(responsePackage);
     }
 })
@@ -275,7 +284,7 @@ router.post('/addTask', async(req, res) =>
     const db = client.db();
     const {userID, taskID} = req.body;
     const fill = await db.collection('tasks').findOne({_id: taskID});
-    var responsePackage = {success: true, error};
+    var responsePackage = {success: false, error};
     if (!ifEmpty(fill) && fill.slots_available > 0)
     {
         let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: taskID}});
@@ -304,6 +313,7 @@ router.post('/addTask', async(req, res) =>
             );
             if (!ifEmpty(update) && !ifEmpty(taskUpdate))
             {
+                responsePackage.success = true;
                 res.status(200).json(responsePackage);
             }
             else
@@ -395,6 +405,12 @@ router.get('/getTasks', async(req, res) =>
 router.post('/edit', async(req, res) =>
 {
     const {first_name, last_name, location, accepted_distance, userID} = req.body;
+
+    const user = await db.collection('volunteer').findOne({_id: userID});
+    if (ifEmpty(user))
+    {
+        return res.status(400).json({success: false});
+    }
 
     if (!ifEmpty(location))
         await db.collection('volunteer').updateOne({_id: userID},

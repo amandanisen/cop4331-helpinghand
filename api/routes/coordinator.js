@@ -172,18 +172,24 @@ router.get('/verify/:token', async(req, res) => {
     const errors = {};
 
     const results = await db.collection('coordinator').find({token: token, token_used: 'f'})
+    var responsePackage = {success: true, error};
 
     if (results.length == 0)
     {
         const emailVerify = await db.collection('coordinator').find({token: token, email_verified: "t"});
         if (emailVerify.length > 0)
-            return res.json("Email has already been verified!");
-        return res.json("Verification token invalid");
+        {
+            responsePackage.error("Email has already been verified");
+            return res.status(200).json(responsePackage);
+        }
+        responsePackage.error = "Verification token invalid";
+        responsePackage.success = false;
+        return res.status(200).json(responsePackage);
     }
 
     const update = await db.collection('coordinator').updateOne({token: token},{$set : {email_verified: "t", token_used: "t"}});
 
-    return res.json("Email verified! Please login to your account");
+    return res.status(200).json(responsePackage);
 
 })
 

@@ -52,7 +52,7 @@ function AccessCodePage(props) {
   
     return (
       <>
-        <Appbar title={location.state.role} />
+         <Appbar title="Homepage test" />
           <form onSubmit={handleSubmit}>
           <Grid container
                 direction="column"

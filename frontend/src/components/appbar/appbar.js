@@ -91,7 +91,7 @@ export default function Appbar(props) {
         </AppBar>
     :
 
-            <AppBar position="static" >
+      <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
             <IconContext.Provider value={{ color: '#fff' }}>
             <div className='navbar'>

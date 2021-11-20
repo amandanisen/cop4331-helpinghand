@@ -71,6 +71,26 @@ export default function Appbar(props) {
     const showSidebar = () => setSidebar(!sidebar);
     
     return (
+      <>
+      {(props.type === "coordinator")
+        ?
+        <AppBar position="static" >
+            <Toolbar variant="dense" className={classes.root}>
+                <IconButton edge="start" className={classes.menuButton} aria-label="menu">
+                    <ArrowBackIosIcon className={classes.backIcon} />
+                </IconButton >
+                <Typography className={classes.title} variant="h6" noWrap>
+                    Coordinator
+                </Typography>
+                <Typography variant="h6" color="inherit">
+                    {props.eventName ? props.eventName : null} 
+             </Typography>
+             <AddIcon/>
+
+            </Toolbar>
+        </AppBar>
+    :
+
             <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
             <IconContext.Provider value={{ color: '#fff' }}>
@@ -103,7 +123,8 @@ export default function Appbar(props) {
           </IconContext.Provider>
    
              <Typography className={classes.title} variant="h6" noWrap>
-                         Homepage
+             {props.title}
+
                      </Typography>
                      <IconButton
                       alginSelf= 'flex-end' 
@@ -117,5 +138,9 @@ export default function Appbar(props) {
                  </Toolbar>
              </AppBar>
 
+              }
+                  </>
+
     );
+              
 }

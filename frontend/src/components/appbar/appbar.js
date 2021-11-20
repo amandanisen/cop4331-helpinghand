@@ -26,7 +26,11 @@ const useStyles = makeStyles((theme) => ({
 
     },
     menuButton: {
-        // marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        backgroundColor: '#005424',
+        color: '#ffff',
+        // borderRadius: 10,
+        // borderWidth: 5,
     },
     title: {
         color: "#FFFFFF",
@@ -133,7 +137,13 @@ export default function Appbar(props) {
                       color="inherit"
                       aria-label="open drawer"
                   >
-                      <ArrowBackIosIcon onClick={() => history.goBack()} />
+                  {props.title == 'Volunteer Tasks Near You'?  <Button className= 'button-summary'  onClick={() => 
+                  { history.push({
+                    pathname: '/volunteer' // your data array of objects
+                  })} }>Summary</Button> : null }
+                 
+                  {/* <ArrowBackIosIcon  */}
+      
                   </IconButton>
                  </Toolbar>
              </AppBar>

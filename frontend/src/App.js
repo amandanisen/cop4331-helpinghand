@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import HomePage from './components/homepage/homepage.js'
-import VolunteerPage from './components/volunteerpage/volunteerpage.js'
+import VolunteerPage from './components/volunteertaskspage/volunteertasks.js'
 import AccessCodePage from './components/accesscodepage/acesscodepage.js';
 import VolunteerLogin from './components/login/volunteerLogin';
 import CoordinatorPage from './components/coordinatorpage/coordinatorpage.js'
@@ -10,7 +10,7 @@ import EventRegistrationForm from './components/eventRegistration/eventRegistrat
 import EventConfirmation from './components/eventconfirmation/eventconfirmation.js'
 import AdminLink from './components/links/adminLink.js'
 import { makeStyles } from '@material-ui/core/styles';
-import AreaPage from "./components/areapage/areapage.js"
+import FindTaskPage from "./components/tasknearpage/tasknearpage.js"
 import TaskRegistration from "./components/taskform/taskform.js"
 import CreateVolunteer from "./components/createVolunteer/createVolunteer.js"
 import CreateCoordinator from "./components/createCoordinator/createCoordinator.js"
@@ -43,8 +43,8 @@ function App() {
           <Route path="/forgot">
             <Forgot/>
           </Route>
-          <Route path="/areas">
-            <AreaPage />
+          <Route path="/findtask">
+            <FindTaskPage />
           </Route>
           <Route path="/vol/verify/">
             <VerifyVol />
@@ -76,8 +76,8 @@ function App() {
           <Route path="/coordinatorPage">
             <CoordinatorPage />
           </Route>
-          <Route path="/areaPage">
-            <AreaPage />
+          <Route path="/findTaskPage">
+            <FindTaskPage />
           </Route>
         </Switch>
       </Router >

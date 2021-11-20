@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Grid } from '@material-ui/core'
-import TaskCard from '../taskcard/taskcard.js'
+import TaskCard from '../volunteertaskcard/taskcard.js'
 import Appbar from "../appbar/appbar.js";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -73,7 +73,7 @@ function AccessCodePage(props) {
         localStorage.setItem('user_data', JSON.stringify(user));
 
         setMessage('');
-        history.push('/areas');
+        history.push('/findtask');
       }
     }
     catch (e)

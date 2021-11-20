@@ -17,6 +17,7 @@ import { IconContext } from 'react-icons';
 import { useState } from 'react';
 import './appbar.css';
 import { SidebarData } from '../sidebar/SidebarData.js';
+import Button from 'react-bootstrap/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -70,25 +71,6 @@ export default function Appbar(props) {
     const showSidebar = () => setSidebar(!sidebar);
     
     return (
-        <>
-              {(props.type === "coordinator")
-                ?
-                <AppBar position="static" >
-                    <Toolbar variant="dense" className={classes.root}>
-                        <IconButton edge="start" className={classes.menuButton} aria-label="menu">
-                            <ArrowBackIosIcon className={classes.backIcon} />
-                        </IconButton >
-                        <Typography className={classes.title} variant="h6" noWrap>
-                            Coordinator
-                        </Typography>
-                        <Typography variant="h6" color="inherit">
-                            {props.eventName ? props.eventName : null} 
-                     </Typography>
-                     <AddIcon/>
-
-                    </Toolbar>
-                </AppBar>
-            :
             <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
             <IconContext.Provider value={{ color: '#fff' }}>
@@ -104,7 +86,9 @@ export default function Appbar(props) {
                     <AiIcons.AiOutlineClose />
                   </Link>
                 </li>
-                {SidebarData.map((item, index) => {
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                {/* {SidebarData.map((item, index) => {
                   return (
                     <li key={index} className={item.cName}>
                       <Link to={item.path}>
@@ -113,13 +97,14 @@ export default function Appbar(props) {
                       </Link>
                     </li>
                   );
-                })}
+                })} */}
               </ul>
             </nav>
           </IconContext.Provider>
-          <Typography className={classes.title} variant="h6" noWrap>
-                            {props.title}
-          </Typography>
+   
+             <Typography className={classes.title} variant="h6" noWrap>
+                         Homepage
+                     </Typography>
                      <IconButton
                       alginSelf= 'flex-end' 
                       edge="end"
@@ -131,8 +116,6 @@ export default function Appbar(props) {
                   </IconButton>
                  </Toolbar>
              </AppBar>
-           }
 
-       </>
     );
 }

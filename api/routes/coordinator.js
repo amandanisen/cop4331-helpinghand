@@ -7,6 +7,7 @@ const checkLogin = require('../validation/login');
 const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
+const buildPath = require('../../frontend/src/redux/buildPath');
 
 // Connect to mongo
 require('dotenv').config();
@@ -101,7 +102,7 @@ router.post('/register', async(req, res) =>
 
             let sub = "Confirm Registration";
 
-            let link = "https://localhost:3000/coord/verify/" + newCoord.token;
+            let link = buildPath('/coord/verify/') + newCoord.token;
 
             let content = 
                 "<body><p>Please verify email.</p> <a href=" + 
@@ -163,7 +164,7 @@ router.post('/login', async(req, res) =>
 })
 
 // Verify Coordinator email
-router.post('/verify/:token', async(req, res) => {
+router.get('/verify/:token', async(req, res) => {
     const {token} = req.params;
     const db = client.db();
     const errors = {};

@@ -33,7 +33,8 @@ function AccessCodePage(props) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
-
+  const [role, setRole] = useState("");
+  
   //register
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -43,8 +44,15 @@ function AccessCodePage(props) {
   const [longitude, setLongitude] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [regiaterRole, setRegisterRole] = useState("");
 
+
+  //submit login
   async function handleSubmit(event) {
+
+   // role has just been added , Api needs to add to api call console.log(role);
+   // and make the call based on the value of role 
+   // register role as well i assume
     event.preventDefault();
 
     var obj = { email: email, password: password };
@@ -77,6 +85,7 @@ function AccessCodePage(props) {
     }
   }
 
+  //handle submit registration moved from createvolunteer
   async function handleRegistration(event)
     {
 
@@ -103,7 +112,7 @@ function AccessCodePage(props) {
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                history.push('/');
+                history.push('/');// would this be history.push areas as well 
             }
         }
         catch(e)
@@ -115,7 +124,7 @@ function AccessCodePage(props) {
 
   return (
     <>
-      <Appbar title={location.state.role} />
+      <Appbar title={"Helping Hand"} />
       <form>
         <Grid container direction="column" justify="center" alignItems="center">
           <Grid
@@ -170,7 +179,7 @@ function AccessCodePage(props) {
           onChange={(event) => setEmail(event.target.value)}
         />
         <TextField
-          margin="normal"
+          marginBottom="normal"
           required
           fullWidth
           name="password"
@@ -180,10 +189,10 @@ function AccessCodePage(props) {
           autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
         />
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
+        
+         <input  className={classes.radio3} type="radio" value="Coordinator" name="Role" onChange={(event) => setRole(event.target.value)} /> Coordinator
+         <input className={classes.radio2}type="radio" value="Volunteer" name="Role" onChange={(event) => setRole(event.target.value)}/> Volunteer
+        
         <Button
           className={classes.buttonColor}
           type="submit"
@@ -295,6 +304,10 @@ function AccessCodePage(props) {
           autoComplete="distance"
           onChange={(event) => setDistance(event.target.value)}
         />
+        <br></br>
+         <br></br>
+         <input className={classes.radio1} type="radio" value="Coordinator" name="RegisterRole" onChange={(event) => setRegisterRole(event.target.value)} /> Coordinator
+         <input className={classes.radio2} type="radio" value="Volunteer" name="RegisterRole" onChange={(event) => setRegisterRole(event.target.value)}/> Volunteer
         <Button
           className={classes.buttonColor}
           type="submit"
@@ -312,6 +325,18 @@ function AccessCodePage(props) {
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 40,
+  },
+  radio1: {
+    marginBottom: 20,
+    marginLeft:0,
+  },
+  radio2: {
+    marginLeft:5,
+  },
+  radio3: {
+    marginTop: 20,
+    marginLeft:0,
+    marginBottom: 20,
   },
   image: {
     marginTop: "5px",

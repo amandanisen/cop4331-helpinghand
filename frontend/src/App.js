@@ -16,7 +16,7 @@ import CreateVolunteer from "./components/createVolunteer/createVolunteer.js"
 import CreateCoordinator from "./components/createCoordinator/createCoordinator.js"
 import VerifyVol from "./components/verify/verifyVol.js";
 import Forgot from "./components/forgotpassword/forgot";
-
+import Edit from "./components/edit/edit.js";
 
 import {
   BrowserRouter as Router,
@@ -78,6 +78,9 @@ function App() {
           </Route>
           <Route path="/findTaskPage">
             <FindTaskPage />
+          </Route>
+          <Route path="/edit">
+            <Edit/>
           </Route>
         </Switch>
       </Router >

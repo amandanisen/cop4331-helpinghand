@@ -8,10 +8,10 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import AdminLink from '../links/adminLink.js';
-
+  
 import AppBar from '../appbar/appbar.js';
 import EventRegistrationForm from '../eventRegistration/eventRegistration.js';
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,7 +55,24 @@ const useStyles = makeStyles((theme) => ({
     link: {
         alignItems: "center",
         color: "#27AE60",
-    }
+    },
+    create: {
+        '& > *': {
+          // backgroundColor: theme.palette.background.paper,
+          margin: theme.spacing(1),
+          fontSize: 10,
+          color: "black",
+        },
+      },
+      link: {
+        '& > *': {
+          // backgroundColor: theme.palette.background.paper,
+          margin: theme.spacing(1),
+          fontSize: 10,
+          color: "#27AE60",
+    
+        },
+      }
 
 }));
 
@@ -97,7 +114,16 @@ export default function HomePage() {
         </Button>
     </Grid>
     <Grid item className={classes.padding}>
-        <AdminLink /> 
+    <div className={classes.create}>
+      <Typography >Creating an event?</Typography>
+      <Button 
+        className={classes.link}
+        variant="body2"
+        onClick={() => history.push("/createVolunteer")}
+      >
+        Click here
+    </Button>
+    </div>
     </Grid>
 
     </Grid>

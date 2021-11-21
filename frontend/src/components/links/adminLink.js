@@ -35,7 +35,7 @@ export default function ButtonLink() {
   let history = useHistory();
 
   function handleClick() {
-    history.push("/event");
+    history.push({pathname: '/createVolunteer' });
   }
 
   return (

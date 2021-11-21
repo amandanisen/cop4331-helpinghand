@@ -2,13 +2,24 @@ import React, {useState} from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
+import useGoogleMapsApi from '../googleapi/useGoogleMapsApi.js'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+
 import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 const buildPath = require('../../redux/buildPath');
 
+const mapStyles = {        
+    height: "100vh",
+    width: "100%"};
+  const defaultCenter = {
+    lat: 41.3851, lng: 2.1734
+  }
+  
 const useStyles = makeStyles((theme) => ({
     root: {
         ...theme.typography.button,
@@ -65,6 +76,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateVolunteer() {
+    const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -124,78 +137,92 @@ export default function CreateVolunteer() {
             {/* <Grid item>
             <img className={classes.image} src="/images/volunteer.png"></img>
             </Grid> */}
-            <Grid item>
-            <Typography className={classes.welcome} variant="h4" component="h4" align="center">Volunteer Registration</Typography>
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"First Name"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setFirstName(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"Last Name"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setLastName(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"Email"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setEmail(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"Password"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setPassword1(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="filled-bare"
-                placeholder={"Confirm Password"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setPassword2(e.target.value)}
-               />
-            </Grid>
-            <Grid item>
-              <TextField
+                <Grid item>
+                    <Typography className={classes.welcome} variant="h4" component="h4" align="center">Volunteer Registration</Typography>
+                </Grid>
+                <Grid item>
+                    <TextField
+                        required
+                        id="filled-bare"
+                        placeholder={"First Name"}
+                        margin="normal"
+                        variant="filled"
+                        onChange={(e)=> setFirstName(e.target.value)}
+                    />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        required
+                        id="filled-bare"
+                        placeholder={"Last Name"}
+                        margin="normal"
+                        variant="filled"
+                        onChange={(e)=> setLastName(e.target.value)}
+                    />
+                </Grid>
+                <Grid item>
+                <TextField
+                    required
+                    id="filled-bare"
+                    placeholder={"Email"}
+                    margin="normal"
+                    variant="filled"
+                    onChange={(e)=> setEmail(e.target.value)}
+                />
+                </Grid>
+                <Grid item>
+                <TextField
+                    required
+                    id="filled-bare"
+                    placeholder={"Password"}
+                    margin="normal"
+                    variant="filled"
+                    onChange={(e)=> setPassword1(e.target.value)}
+                />
+                </Grid>
+                <Grid item>
+                <TextField
+                    required
+                    id="filled-bare"
+                    placeholder={"Confirm Password"}
+                    margin="normal"
+                    variant="filled"
+                    onChange={(e)=> setPassword2(e.target.value)}
+                />
+                </Grid>
+                <Grid item>
+                    <GooglePlacesAutocomplete
+                        margin="normal"
+                        variant="filled"
+                        style = {{width: 100}}
+                        apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+                    />
+                {/* <LoadScript
+                    googleMapsApiKey='AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4'>
+                    <GoogleMap
+                        mapContainerStyle={mapStyles}
+                        zoom={13}
+                        center={defaultCenter}
+                    />
+                </LoadScript> */}
+              {/* <TextField
                 required
                 id="filled-bare"
                 placeholder={"Longitude"}
                 margin="normal"
                 variant="filled"
                 onChange={(e)=> setLongitude(e.target.value)}
-               />
+               /> */}
             </Grid>
             <Grid item>
-              <TextField
+              {/* <TextField
                 required
                 id="filled-bare"
                 placeholder={"Latitude"}
                 margin="normal"
                 variant="filled"
                 onChange={(e)=> setLatitude(e.target.value)}
-               />
+               /> */}
             </Grid>
             <Grid item>
               <TextField

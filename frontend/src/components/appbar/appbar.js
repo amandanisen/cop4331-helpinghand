@@ -18,6 +18,8 @@ import { useState } from 'react';
 import './appbar.css';
 import { SidebarData } from '../sidebar/SidebarData.js';
 import Button from 'react-bootstrap/Button';
+import { VscEdit } from "react-icons/vsc";
+import { RiLogoutBoxLine} from "react-icons/ri";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,8 +112,8 @@ export default function Appbar(props) {
                     <AiIcons.AiOutlineClose />
                   </Link>
                 </li>
-                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
-                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > <VscEdit/>edit </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/")} > <RiLogoutBoxLine/>logout </Button>
                 {/* {SidebarData.map((item, index) => {
                   return (
                     <li key={index} className={item.cName}>

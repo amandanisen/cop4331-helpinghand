@@ -81,7 +81,7 @@ const [roleShown, setRoleShown] = useState(true);
   const [longitude, setLongitude] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [distance, setDistance] = useState(0);
-  const [regiaterRole, setRegisterRole] = useState("");
+  const [registerRole, setRegisterRole] = useState("");
 
   //submit login
   async function handleSubmit(event) {
@@ -113,7 +113,7 @@ const [roleShown, setRoleShown] = useState(true);
         localStorage.setItem("user_data", JSON.stringify(user));
 
         setMessage("");
-        history.push("/areas");
+        history.push("/findtask");
       }
     } catch (e) {
       alert(e.toString());
@@ -124,41 +124,79 @@ const [roleShown, setRoleShown] = useState(true);
   //handle submit registration moved from createvolunteer
   async function handleRegistration(event) {
     event.preventDefault();
-    var obj = {
-      email: registerEmail,
-      password1: password1,
-      password2: password2,
-      first_name: firstName,
-      last_name: lastName,
-      longitude: longitude,
-      latitude: latitude,
-      accepted_distance: distance,
-    };
-
-    var js = JSON.stringify(obj);
+  
 
     try {
-      const response = await fetch(buildPath("/vol/register"), {
-        method: "POST",
-        body: js,
-        headers: { "Content-Type": "application/json" },
-      });
+      if(registerRole == "Volunteer"){
+        var obj = {
+          email: registerEmail,
+          password1: password1,
+          password2: password2,
+          first_name: firstName,
+          last_name: lastName,
+          longitude: longitude,
+          latitude: latitude,
+          accepted_distance: distance,
+        };
+    
+        var js = JSON.stringify(obj);
+
+        const response = await fetch(buildPath("/vol/register"), {
+          method: "POST",
+          body: js,
+          headers: { "Content-Type": "application/json" },
+        });
+
 
       var res = JSON.parse(await response.text());
 
-      if (res.id == -1) {
-        alert(JSON.stringify(res.error));
-      } else {
-        var user = {
-          first_name: res.first_name,
-          last_name: res.last_name,
-          id: res.id,
+        if (res.id == -1) {
+          alert(JSON.stringify(res.error));
+        } else {
+          var user = {
+            first_name: res.first_name,
+            last_name: res.last_name,
+            id: res.id,
+          };
+          localStorage.setItem("user_data", JSON.stringify(user));
+          
+          setMessage("");
+          history.push("/findtask"); // would this be history.push areas as well
+        }
+      }else{
+        var obj = {
+          email: registerEmail,
+          password1: password1,
+          password2: password2,
+          first_name: firstName,
+          last_name: lastName,
         };
-        localStorage.setItem("user_data", JSON.stringify(user));
+    
+        var js = JSON.stringify(obj);
+        const response = await fetch(buildPath("/coord/register"), {
+          method: "POST",
+          body: js,
+          headers: { "Content-Type": "application/json" },
+        });
 
-        setMessage("");
-        history.push("/"); // would this be history.push areas as well
+
+        var res = JSON.parse(await response.text());
+
+        if (res.id == -1) {
+          alert(JSON.stringify(res.error));
+        } else {
+          var user = {
+            first_name: res.first_name,
+            last_name: res.last_name,
+            id: res.id,
+          };
+          localStorage.setItem("user_data", JSON.stringify(user));
+          
+          setMessage("");
+          history.push("/coordinatorpage"); // would this be history.push areas as well
+        }
       }
+  
     } catch (e) {
       alert(e.toString());
       return;

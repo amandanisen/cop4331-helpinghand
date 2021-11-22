@@ -39,7 +39,7 @@ function AccessCodePage(props) {
 const loginBtnProps = useSpring({
   borderBottom: registrationFormStatus 
     ? "solid 0px transparent"
-    : "solid 2px #27AE60",  //Animate bottom border of login button
+    : "solid 2px #27AE60",  
     color:registrationFormStatus
     ? "#808080"
     :"#27AE60", 
@@ -48,7 +48,7 @@ const loginBtnProps = useSpring({
 const registerBtnProps = useSpring({
   borderBottom: registrationFormStatus
     ? "solid 2px #27AE60"
-    : "solid 0px transparent", //Animate bottom border of register button
+    : "solid 0px transparent", 
     color:registrationFormStatus
     ? "#27AE60"
     :"#808080",
@@ -65,9 +65,6 @@ function loginClicked() {
 }
 
 const [roleShown, setRoleShown] = useState(true);
-const [fadeProp, setFadeProp] = useState({
-  fade: 'fade-in',
-});
 
   //login
   const [email, setEmail] = useState("");
@@ -250,15 +247,26 @@ const [fadeProp, setFadeProp] = useState({
           autoComplete="current-password"
           onChange={(event) => setPassword(event.target.value)}
         />
-
-        <RadioGroup
+  
+<Grid container>
+          <Grid item  style={{
+            marginTop: "22px",
+            marginRight: "10px"
+          }}>
+              Role: 
+          </Grid>
+          <Grid item>
+          <RadioGroup
           aria-label="Role"
           defaultValue="Volunteer"
           name="role-buttons-group"
+          label ="test"
+          
           style={{
             flexDirection: "row",
             marginTop: "15px",
             marginBottom: "15px",
+            color: "#808080",
           }}
         >
           <FormControlLabel
@@ -273,8 +281,11 @@ const [fadeProp, setFadeProp] = useState({
             label="Coordinator"
             onChange={(event) => setRole(event.target.value)}
           />
-        </RadioGroup>
+        </RadioGroup> 
 
+          </Grid>
+        </Grid>
+       
         <Button
           className={classes.buttonColor}
           type="submit"
@@ -393,6 +404,14 @@ const [fadeProp, setFadeProp] = useState({
         />
       
        
+<Grid container>
+          <Grid item  style={{
+            marginTop: "22px",
+            marginRight: "10px"
+          }}>
+              Role: 
+          </Grid>
+          <Grid item>
       <RadioGroup
           aria-label="Role"
           defaultValue="Volunteer"
@@ -401,6 +420,7 @@ const [fadeProp, setFadeProp] = useState({
             flexDirection: "row",
             marginTop: "15px",
             marginBottom: "15px",
+            color: "#808080",
           }}
         >
           <FormControlLabel
@@ -416,6 +436,9 @@ const [fadeProp, setFadeProp] = useState({
             onChange={(event) => setRegisterRole(event.target.value)}
           />
         </RadioGroup>
+
+        </Grid>
+        </Grid>
         <Button
           className={classes.buttonColor}
           type="submit"

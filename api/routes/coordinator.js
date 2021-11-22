@@ -8,6 +8,7 @@ const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const buildPath = require('../../frontend/src/redux/buildPath');
+const findUser = require('../utilities/findUser');
 
 // Connect to mongo
 require('dotenv').config();
@@ -195,7 +196,7 @@ router.get('/verify/:token', async(req, res) => {
 
 router.get('/tasks', async(req, res) => {
     const db = client.db();
-    const {coordID} = req.body;
+    const {coordID} = findUser({email: req.body, role: 'coordinator)'});
     var taskIDs = [];
     var ret = [];
     taskIDs = await db.collection('volunteer').findOne({_id: coordID}, {_id: 0, task_arr: 1}).task_arr;

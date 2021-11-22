@@ -48,7 +48,7 @@ function Edit(props) {
   const [mylocation, setLocation] = useState('');
   const [distance, setDistance] = useState(0);
   const [radius, setRadius] = useState(0);
-
+  const [message, setMessage] = useState('');
   async function handleEdit(event)
     {
         event.preventDefault();
@@ -58,11 +58,22 @@ function Edit(props) {
 
         try
         {
-            const response = await fetch(buildPath('/vol/register'), {method: 'POST',
+            const response = await fetch(buildPath('/vol/edit'), {method: 'POST',
                 body: js, headers:{'Content-Type':'application/json'}});
 
             var res = JSON.parse(await response.text());
+            if (res.id == -1)
+            {
+                alert(JSON.stringify(res.error));
+            }
+            else
+            {
+                var user = {first_name: res.first_name, last_name: res.last_name, location: res.location, accepted_distance: res.accepted_distance, radius: res.radius};
+                localStorage.setItem('user_data', JSON.stringify(user));
 
+                setMessage('');
+                history.goBack();
+            }
            
         }
         catch(e)

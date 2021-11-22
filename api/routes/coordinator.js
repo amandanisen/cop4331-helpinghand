@@ -193,4 +193,14 @@ router.get('/verify/:token', async(req, res) => {
 
 })
 
+router.get('/tasks', async(req, res) => {
+    const db = client.db();
+    const {coordID} = req.body;
+    var taskIDs = [];
+    var ret = [];
+    taskIDs = await db.collection('volunteer').findOne({_id: coordID}, {_id: 0, task_arr: 1}).task_arr;
+    console.log(taskIDs);
+    
+})
+
 module.exports = router;

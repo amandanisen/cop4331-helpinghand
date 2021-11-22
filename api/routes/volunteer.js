@@ -384,8 +384,8 @@ router.get('/getTasks', async(req, res) =>
     // Input: userID
     // Output: array of tasks
     const db = client.db();
-    const {userID} = req.body;
-    const user = await db.collection('volunteer').find({_id: userID});
+    const {userID, email} = req.body;
+    const user = await db.collection('volunteer').findOne({_id: userID});
     if (ifEmpty(user))
     {
         return res.status(400).json("cannot find user");

@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import HomePage from './components/homepage/homepage.js'
+import HomePage from './components/login/volunteerLogin.js'
 import VolunteerPage from './components/volunteertaskspage/volunteertasks.js'
 import AccessCodePage from './components/accesscodepage/acesscodepage.js';
 import VolunteerLogin from './components/login/volunteerLogin';

@@ -115,7 +115,12 @@ const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
         localStorage.setItem("user_data", JSON.stringify(user));
 
         setMessage("");
-        history.push("/areas");
+        console.log(role);
+        if(role == "Volunteer"){
+          history.push("/findtask");
+        }else{
+          history.push("/coordinatorpage");
+        }
       }
     } catch (e) {
       alert(e.toString());

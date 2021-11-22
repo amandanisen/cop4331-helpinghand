@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import HomePage from './components/homepage/homepage.js';
+import HomePage from './components/homepage/homepageold.js';
 import axios from "axios"
 import { Provider as ReduxProvider } from 'react-redux';
 import store from './redux/store';

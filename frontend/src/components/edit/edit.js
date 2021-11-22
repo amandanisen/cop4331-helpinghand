@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { Grid } from '@material-ui/core'
-import TaskCard from '../volunteertaskcard/taskcard.js'
 import Appbar from "../appbar/appbar.js";
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
 import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import { setAreas } from '../../redux/actions.js';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import './edit.css';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 const buildPath = require('../../redux/buildPath');
 
@@ -40,19 +33,21 @@ const useStyles = makeStyles((theme) => ({
 
 function Edit(props) {
   const classes = useStyles();
-  const location = useLocation();
+  //const location = useLocation();
   
   let history = useHistory();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [mylocation, setLocation] = useState('');
   const [distance, setDistance] = useState(0);
   const [radius, setRadius] = useState(0);
   const [message, setMessage] = useState('');
+  const [location, setLocation] = useState(null); 
+  const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
+  console.log(location);
   async function handleEdit(event)
     {
         event.preventDefault();
-        var obj = { first_name: firstName, last_name: lastName, location: mylocation, accepted_distance: distance, radius: radius};
+        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, radius: radius};
  
         var js = JSON.stringify(obj);
 
@@ -110,15 +105,6 @@ function Edit(props) {
                 />
               </div>
               <div className = "form-group">
-                <label htmlFor='location'>Location:</label>
-                <input 
-                type = 'text' 
-                name = 'editLocation' 
-                id = 'editLocation' 
-                onChange = {(event) => setLocation(event.target.value)}
-                />
-              </div>
-              <div className = "form-group">
                 <label htmlFor='radius'>Radius:</label>
                 <input 
                 type = 'text' 
@@ -127,6 +113,26 @@ function Edit(props) {
                 onChange = {(event) => setRadius(event.target.value)}
                 />
               </div>
+             
+              <div className = "form-group">
+                <label htmlFor='location'>Location:</label>
+                {/* <input 
+                type = 'text' 
+                name = 'editLocation' 
+                id = 'editLocation' 
+                onChange = {(event) => setLocation(event.target.value)}
+                /> */}
+                 <GooglePlacesAutocomplete
+                        selectProps={{
+                            location,
+                            onChange: setLocation,
+                        }}
+                        style = {{width: 100}}
+                        apiOptions={{region: 'us' }}
+                        apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+                    />
+              </div>
+              
               <input type = "submit" value = "Edit Details" />
             </div>
           </div>

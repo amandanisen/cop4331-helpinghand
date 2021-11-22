@@ -4,6 +4,8 @@ import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
 import useGoogleMapsApi from '../googleapi/useGoogleMapsApi.js'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete';
+import AutoComplete from 'react-google-autocomplete';
 
 import { useHistory } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
@@ -20,8 +22,6 @@ const mapStyles = {
     lat: 41.3851, lng: 2.1734
   }
   
-
-
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,9 +78,18 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+// geocodeByAddress('UCF, Central Florida Blvd, Orlando, FL, USA')
+// .then(results => getLatLng(results[0]))
+// .then(({ lat, lng }) =>
+//     console.log('Successfully got latitude and longitude', { lat, lng })
+// );
+
 export default function CreateVolunteer() {
     const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
-    const [location, setLocation] = useState(null); 
+    const [place, setLocation] = useState(null); 
+    const [lat, setLat] = useState(''); 
+    const [long, setLong] = useState(''); 
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -90,7 +99,28 @@ export default function CreateVolunteer() {
     const [latitude, setLatitude] = useState(0);
     const [distance, setDistance] = useState(0);
     const [message, setMessage] = useState('');
-    console.log(location);
+
+    
+    // const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+    // var place = GooglePlacesAutocomplete.location.lat();
+
+    // var lat = place.geometry.location.lat(),
+    // lng = place.geometry.location.lng();
+
+    // Then do whatever you want with them
+
+    // console.log(place);
+    // console.log(lng);
+    if(place != null){
+        console.log(place.formatted_address);
+        var lati = place.geometry.location.lat();
+        var lng = place.geometry.location.lng();
+        console.log(lati, lng);
+    }
+
+   
+
     const classes = useStyles();
     let history = useHistory();
 
@@ -128,8 +158,10 @@ export default function CreateVolunteer() {
             return;
         }
     }
+
     return (
         <div>
+            
             <Appbar title="Volunteer" type="Volunteer"/>
             <Grid
                 container
@@ -194,15 +226,47 @@ export default function CreateVolunteer() {
                 />
                 </Grid>
                 {/* <Grid item> */}
-                    <GooglePlacesAutocomplete
+                    <AutoComplete
+                    apiKey={apiKey}
+                    onPlaceSelected={(place) => 
+                        setLocation(place)}
+                    options={{
+                        types: ["address"],
+                        componentRestrictions: { country: "us" },
+                      }}
+                    />
+                    {/* <GooglePlacesAutocomplete
                         selectProps={{
                             location,
                             onChange: setLocation,
                         }}
-                        style = {{width: 100}}
-                        apiOptions={{region: 'us' }}
+                        
+                        placeholder='Event Location'
+                        minLength={2} // minimum length of text to search
+                        autoFocus={false}
+                        apiOptions={{ language: 'en', region: 'us' }}
+                        // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
+                        listViewDisplayed='auto'    // true/false/undefined
                         apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
-                    />
+                        fetchDetails={true}
+                        renderDescription={row => row.description} // custom description render
+                        onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                          console.log(data, details);
+                        }}
+                        // onPress={(data, details = null) => {
+                        //     console.warn(data, details);
+                        //     // 'details' is provided when fetchDetails = true
+                        //     this.setState(
+                        //       {
+                        //         location: data.description, // selected address
+                        //         coordinates: `${details.geometry.location.lat},${details.geometry.location.lng}` // selected coordinates
+                        //       }
+                        //     );
+                        //   }}
+                        //   textInputProps={{
+                        //     onChangeText: (text) => { console.log(text) }
+                        //   }} */}
+                    {/* /> */}
                 {/* </Grid> */}
             <Grid item>
               {/* <TextField

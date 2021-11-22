@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
         },
         textAlign: "center",
+        marginRight: '38px',
     },
     backIcon: {
         color: '#FFFFFF',
@@ -144,8 +145,7 @@ export default function Appbar(props) {
                     pathname: '/volunteer' // your data array of objects
                   })} }>Summary</Button> : null }
                  
-                  {/* <ArrowBackIosIcon  */}
-      
+                  {/* <ArrowBackIosIcon className={classes.backIcon} onClick = {() => history.goBack()}/> */}
                   </IconButton>
                  </Toolbar>
              </AppBar>

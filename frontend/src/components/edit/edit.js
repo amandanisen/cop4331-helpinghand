@@ -72,7 +72,7 @@ function Edit(props) {
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                history.push('/');
+                history.goBack();
             }
            
         }

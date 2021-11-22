@@ -35,12 +35,12 @@ router.use((req, res, next) =>
 // Create Coordinator
 router.post('/register', async(req, res) =>
 {
-    // input: firstname, lastname, location, email, password1, password 2
+    // input: firstname, lastname, email, password1, password 2
     // output: id, firstname, lastname, error
     let error = {};
     const db = client.db();
 
-    const {email, password1, password2, first_name, last_name, location} = req.body;
+    const {email, password1, password2, first_name, last_name} = req.body;
     const data = 
     {
         email: email,
@@ -85,8 +85,8 @@ router.post('/register', async(req, res) =>
             // new coord object
             const newCoord = {coord_email: email, 
                     coord_first_name: first_name, coord_last_name: last_name, token: token,
-                    coord_location: location, coord_pw: hash, email_verified: "f",
-                    token_used: "f"};
+                    coord_pw: hash, email_verified: "f",
+                    token_used: "f", task_arr: []};
             const results = await db.collection('coordinator').insertOne(newCoord);
 
             if (results.length == 0)

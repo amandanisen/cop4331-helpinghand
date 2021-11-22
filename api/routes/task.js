@@ -29,7 +29,7 @@ router.use((req, res, next) =>
 // Create Task
 router.post('/create', async(req, res) =>
 {
-    // input: name, description, date, max_slots, latitude, longitude
+    // input: name, description, date, max_slots, latitude, longitude, coordID
     // return: id, error
     var error = {};
 
@@ -51,6 +51,7 @@ router.post('/create', async(req, res) =>
     const result = await db.collection('tasks').insertOne(newTask);
 
     var ret = {id: result.insertedId, error: error};
+    var coord = await db.collection('coordinator').updateOne({_id: req.body.coordID}, {$push: {task_arr: ret.id}});
     res.status(200).json(ret);
 
 });

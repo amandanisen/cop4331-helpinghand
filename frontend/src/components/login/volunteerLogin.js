@@ -22,7 +22,7 @@ import { setAreas } from "../../redux/actions.js";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { sizing } from '@mui/system';
-
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 import "react-tabs/style/react-tabs.css";
 import { FaCentercode } from "react-icons/fa";
@@ -31,7 +31,7 @@ const buildPath = require("../../redux/buildPath");
 
 function AccessCodePage(props) {
   const classes = useStyles();
-  const location = useLocation();
+  //const location = useLocation();
   let history = useHistory();
   const [registrationFormStatus, setRegistartionFormStatus] = useState(false);
 
@@ -65,7 +65,7 @@ function loginClicked() {
 }
 
 const [roleShown, setRoleShown] = useState(true);
-
+const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
   //login
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -73,6 +73,7 @@ const [roleShown, setRoleShown] = useState(true);
   const [role, setRole] = useState("Volunteer");
 
   //register
+  const [location, setLocation] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");
@@ -81,7 +82,8 @@ const [roleShown, setRoleShown] = useState(true);
   const [longitude, setLongitude] = useState(0);
   const [latitude, setLatitude] = useState(0);
   const [distance, setDistance] = useState(0);
-  const [registerRole, setRegisterRole] = useState("");
+  const [regiaterRole, setRegisterRole] = useState("");
+  console.log(location);
 
   //submit login
   async function handleSubmit(event) {
@@ -113,7 +115,7 @@ const [roleShown, setRoleShown] = useState(true);
         localStorage.setItem("user_data", JSON.stringify(user));
 
         setMessage("");
-        history.push("/findtask");
+        history.push("/areas");
       }
     } catch (e) {
       alert(e.toString());
@@ -124,79 +126,41 @@ const [roleShown, setRoleShown] = useState(true);
   //handle submit registration moved from createvolunteer
   async function handleRegistration(event) {
     event.preventDefault();
-  
+    var obj = {
+      email: registerEmail,
+      password1: password1,
+      password2: password2,
+      first_name: firstName,
+      last_name: lastName,
+      longitude: longitude,
+      latitude: latitude,
+      accepted_distance: distance,
+    };
+
+    var js = JSON.stringify(obj);
 
     try {
-      if(registerRole == "Volunteer"){
-        var obj = {
-          email: registerEmail,
-          password1: password1,
-          password2: password2,
-          first_name: firstName,
-          last_name: lastName,
-          longitude: longitude,
-          latitude: latitude,
-          accepted_distance: distance,
-        };
-    
-        var js = JSON.stringify(obj);
-
-        const response = await fetch(buildPath("/vol/register"), {
-          method: "POST",
-          body: js,
-          headers: { "Content-Type": "application/json" },
-        });
-
+      const response = await fetch(buildPath("/vol/register"), {
+        method: "POST",
+        body: js,
+        headers: { "Content-Type": "application/json" },
+      });
 
       var res = JSON.parse(await response.text());
 
-        if (res.id == -1) {
-          alert(JSON.stringify(res.error));
-        } else {
-          var user = {
-            first_name: res.first_name,
-            last_name: res.last_name,
-            id: res.id,
-          };
-          localStorage.setItem("user_data", JSON.stringify(user));
-          
-          setMessage("");
-          history.push("/findtask"); // would this be history.push areas as well
-        }
-      }else{
-        var obj = {
-          email: registerEmail,
-          password1: password1,
-          password2: password2,
-          first_name: firstName,
-          last_name: lastName,
+      if (res.id == -1) {
+        alert(JSON.stringify(res.error));
+      } else {
+        var user = {
+          first_name: res.first_name,
+          last_name: res.last_name,
+          id: res.id,
         };
-    
-        var js = JSON.stringify(obj);
-        const response = await fetch(buildPath("/coord/register"), {
-          method: "POST",
-          body: js,
-          headers: { "Content-Type": "application/json" },
-        });
+        localStorage.setItem("user_data", JSON.stringify(user));
 
-
-        var res = JSON.parse(await response.text());
-
-        if (res.id == -1) {
-          alert(JSON.stringify(res.error));
-        } else {
-          var user = {
-            first_name: res.first_name,
-            last_name: res.last_name,
-            id: res.id,
-          };
-          localStorage.setItem("user_data", JSON.stringify(user));
-          
-          setMessage("");
-          history.push("/coordinatorpage"); // would this be history.push areas as well
-        }
+        setMessage("");
+        history.push("/"); // would this be history.push areas as well
       }
-  
     } catch (e) {
       alert(e.toString());
       return;
@@ -410,6 +374,17 @@ const [roleShown, setRoleShown] = useState(true);
           autoComplete="password1"
           onChange={(event) => setPassword2(event.target.value)}
         />
+        
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="distance"
+          label="distance"
+          id="distance"
+          autoComplete="distance"
+          onChange={(event) => setDistance(event.target.value)}
+        />
         <TextField
           margin="normal"
           required
@@ -430,18 +405,16 @@ const [roleShown, setRoleShown] = useState(true);
           autoComplete="latitude"
           onChange={(event) => setLatitude(event.target.value)}
         />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          name="distance"
-          label="distance"
-          id="distance"
-          autoComplete="distance"
-          onChange={(event) => setDistance(event.target.value)}
-        />
-      
-       
+        <input id="searchTextField" type="text" size="50" placeholder="Select Location"></input>
+        <GooglePlacesAutocomplete 
+                        selectProps={{
+                            location,
+                            onChange: setLocation,
+                        }}
+                        style = {{width: 100}}
+                        apiOptions={{region: 'us' }}
+                        apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+                    />
 <Grid container>
           <Grid item  style={{
             marginTop: "22px",

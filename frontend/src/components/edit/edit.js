@@ -41,6 +41,8 @@ function Edit(props) {
   const [distance, setDistance] = useState(0);
   const [radius, setRadius] = useState(0);
   const [message, setMessage] = useState('');
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
   const [location, setLocation] = useState(null); 
   const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
   console.log(location);
@@ -48,7 +50,6 @@ function Edit(props) {
     {
         event.preventDefault();
         var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, radius: radius};
- 
         var js = JSON.stringify(obj);
 
         try
@@ -63,7 +64,8 @@ function Edit(props) {
             }
             else
             {
-                var user = {first_name: res.first_name, last_name: res.last_name, location: res.location, accepted_distance: res.accepted_distance, radius: res.radius};
+                // var user = {first_name: res.first_name, last_name: res.last_name, location: res.location, accepted_distance: res.accepted_distance, radius: res.radius};
+                var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
@@ -106,6 +108,24 @@ function Edit(props) {
               </div>
               <div className = "form-group">
                 <label htmlFor='radius'>Radius:</label>
+                <input 
+                type = 'text' 
+                name = 'radius' 
+                id = 'radius' 
+                onChange = {(event) => setRadius(event.target.value)}
+                />
+              </div>
+              <div className = "form-group">
+                <label htmlFor='last name'>Longitude:</label>
+                <input 
+                type = 'text' 
+                name = 'editLastName' 
+                id = 'editLastName' 
+                onChange = {(event) => setLastName(event.target.value)}
+                />
+              </div>
+              <div className = "form-group">
+                <label htmlFor='radius'>Latitude:</label>
                 <input 
                 type = 'text' 
                 name = 'radius' 

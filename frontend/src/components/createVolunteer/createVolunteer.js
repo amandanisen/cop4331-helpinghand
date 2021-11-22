@@ -20,6 +20,9 @@ const mapStyles = {
     lat: 41.3851, lng: 2.1734
   }
   
+
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
         ...theme.typography.button,
@@ -77,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreateVolunteer() {
     const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
-
+    const [location, setLocation] = useState(null); 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -87,7 +90,7 @@ export default function CreateVolunteer() {
     const [latitude, setLatitude] = useState(0);
     const [distance, setDistance] = useState(0);
     const [message, setMessage] = useState('');
-
+    console.log(location);
     const classes = useStyles();
     let history = useHistory();
 
@@ -190,30 +193,17 @@ export default function CreateVolunteer() {
                     onChange={(e)=> setPassword2(e.target.value)}
                 />
                 </Grid>
-                <Grid item>
+                {/* <Grid item> */}
                     <GooglePlacesAutocomplete
-                        margin="normal"
-                        variant="filled"
+                        selectProps={{
+                            location,
+                            onChange: setLocation,
+                        }}
                         style = {{width: 100}}
+                        apiOptions={{region: 'us' }}
                         apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
                     />
-                {/* <LoadScript
-                    googleMapsApiKey='AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4'>
-                    <GoogleMap
-                        mapContainerStyle={mapStyles}
-                        zoom={13}
-                        center={defaultCenter}
-                    />
-                </LoadScript> */}
-              {/* <TextField
-                required
-                id="filled-bare"
-                placeholder={"Longitude"}
-                margin="normal"
-                variant="filled"
-                onChange={(e)=> setLongitude(e.target.value)}
-               /> */}
-            </Grid>
+                {/* </Grid> */}
             <Grid item>
               {/* <TextField
                 required

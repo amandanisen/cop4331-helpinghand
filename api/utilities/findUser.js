@@ -5,7 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(url);
 client.connect();
 
-module.exports = function findUser(data) {
+module.exports = async function findUser(data) {
     const db = client.db();
     const {email, role} = data;
 

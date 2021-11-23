@@ -84,15 +84,15 @@ export default function Appbar(props) {
         <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
                 <IconButton edge="start" className={classes.menuButton} aria-label="menu">
-                    <ArrowBackIosIcon className={classes.backIcon} />
+                    {/* <ArrowBackIosIcon className={classes.backIcon} /> */}
                 </IconButton >
                 <Typography className={classes.title} variant="h6" noWrap>
-                    Coordinator
+                {props.title}
                 </Typography>
-                <Typography variant="h6" color="inherit">
-                    {props.eventName ? props.eventName : null} 
-             </Typography>
-             <AddIcon/>
+                {/* <Typography variant="h6" color="inherit">
+                    {props.eventName ? props.eventName : null}  */}
+             {/* </Typography> */}
+             {/* <AddIcon/> */}
 
             </Toolbar>
         </AppBar>

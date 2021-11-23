@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import TaskCard from '../volunteertaskcard/taskcard.js'
+import TaskCard from './coordinatortasklist'
 import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
 import { useLocation } from "react-router-dom";
@@ -7,10 +7,12 @@ import { connect } from "react-redux";
 import { setAreas } from '../../redux/actions';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { useHistory } from "react-router-dom";
 
 
 export default function CoordinatorPage(props) {
     const location = useLocation();
+    let history = useHistory();
     const [tasks, setTasks] = useState([]);
     const [selected, setSelected] = useState({});
     let idTrack = useRef(null);
@@ -22,6 +24,7 @@ export default function CoordinatorPage(props) {
         bottom: 20,
         left: 'auto',
         position: 'fixed',
+        backgroundColor: '#19AE59',
     };
     const fabStyle = {
         right: 20,
@@ -114,7 +117,7 @@ export default function CoordinatorPage(props) {
                 )}
             
             </Grid >
-            <Fab style={style} color="primary" aria-label="add">
+            <Fab style={style} color="primary" aria-label="add" onClick={() => { history.push('/createTask') }}>
                 <AddIcon />
             </Fab>
         </div>

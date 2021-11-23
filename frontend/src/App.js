@@ -61,7 +61,7 @@ function App() {
           <Route path="/eventConfirmation">
             <EventConfirmation />
           </Route>
-          <Route path="/taskRegistration">
+          <Route path="/createTask">
             <TaskRegistration />
           </Route>
           <Route path="/volunteer">

@@ -195,7 +195,7 @@ router.get('/verify/:token', async(req, res) => {
 
 })
 
-router.get('/tasks', async(req, res) => {
+router.post('/tasks', async(req, res) => {
     // Input: email
     // Output: array of tasks
     const db = client.db();

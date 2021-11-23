@@ -68,19 +68,28 @@ router.post('/find', async(req, res) =>
   // input: latitude, longitude (of the volunteer searching), range
   // out: list of tasks
   const db = client.db();
-  const {longitude, latitude, distance} = req.body;
+  const {email} = req.body;
 
-  let searchRange = distance * 1609.34;
-  const results = await db.collection('tasks').find({task_location:
-    {$near:
-      {
-        $geometry: {type: "Point", coordinates: [longitude, latitude]},
-        $minDistance: 0,
-        $maxDistance: searchRange
-      }
+  await db.collection('volunteer').findOne({vol_email: email}).then( (user) => {
+    if (user == null)
+    {
+      return res.status(400).json("Couldn't find user");
     }
-  }).toArray();
-  res.status(200).json(results);
+    let searchRange = user.vol_accepted_distance * 1609.34;
+    await db.collection('tasks').find({task_location:
+      {$near:
+        {
+          $geometry: {type: "Point", coordinates: user.vol_location.coordinates},
+          $minDistance: 0,
+          $maxDistance: searchRange
+        }
+      }
+    }).toArray().then((results) =>{
+      return res.status(200).json(results);
+    });
+    
+  });
+
 })
 
 module.exports = router;

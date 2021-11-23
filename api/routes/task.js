@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const checkFields = require("../validation/task");
+const findUser = require('../utilities/findUser');
 
 
 // Connect to mongo
@@ -40,7 +41,6 @@ router.post('/create', async(req, res) =>
       return res.status(400).json({id: -1, error});
     }
     const{name, description, date, max_slots} = req.body;
-
     const location = {type: "Point", coordinates: [req.body.longitude, req.body.latitude]};
 
     const newTask = {task_name: name, task_description: description, 
@@ -51,7 +51,7 @@ router.post('/create', async(req, res) =>
     const result = await db.collection('tasks').insertOne(newTask);
 
     var ret = {id: result.insertedId, error: error};
-    var coord = await db.collection('coordinator').updateOne({_id: findUser({email: req.body.email, role: 'coordinator'})}, 
+    var coord = await db.collection('coordinator').updateOne({_id: await findUser({email: req.body.email, role: 'coordinator'})}, 
       {
         $push: 
         {

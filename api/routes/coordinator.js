@@ -9,6 +9,7 @@ const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const buildPath = require('../../frontend/src/redux/buildPath');
 const findUser = require('../utilities/findUser');
+const taskArr = require('../utilities/taskArr');
 
 // Connect to mongo
 require('dotenv').config();
@@ -196,12 +197,16 @@ router.get('/verify/:token', async(req, res) => {
 
 router.get('/tasks', async(req, res) => {
     const db = client.db();
-    const {coordID} = findUser({email: req.body, role: 'coordinator)'});
+    const coordID = await findUser({email: req.body.email, role: 'coordinator'});
     var taskIDs = [];
-    var ret = [];
-    taskIDs = await db.collection('volunteer').findOne({_id: coordID}, {_id: 0, task_arr: 1}).task_arr;
-    console.log(taskIDs);
+    var ret;
+    taskIDs = await db.collection('coordinator').findOne({_id: coordID}, {_id: 0, task_arr: 1});
+    taskIDs = taskIDs.task_arr;
+    ret = await taskArr({task_arr: taskIDs});
+
     
+    console.log(ret);
+    res.status(200).json(ret);
 })
 
 module.exports = router;

@@ -284,7 +284,7 @@ router.post('/addTask', async(req, res) =>
     // Input: userID, taskID
     const db = client.db();
     const {email, taskID} = req.body;
-    const userID = findUser({email: email, role: 'volunteer'});
+    const userID = await findUser({email: email, role: 'volunteer'});
     const fill = await db.collection('tasks').findOne({_id: taskID});
     var responsePackage = {success: false, error};
     if (!ifEmpty(fill) && fill.slots_available > 0)
@@ -344,7 +344,7 @@ router.post('/removeTask', async(req, res) =>
     // Input: userID, taskID
     const db = client.db();
     const {email, taskID} = req.body;
-    const userID = findUser({email: email, role: 'volunteer'});
+    const userID = await findUser({email: email, role: 'volunteer'});
     var responsePackage = {success: true, error};
     const task = await db.collection('tasks').find({_id: taskID, vol_arr: {$eq: userID}});
 
@@ -388,7 +388,7 @@ router.get('/getTasks', async(req, res) =>
     // Output: array of tasks
     const db = client.db();
     const {email} = req.body;
-    const userID = findUser({email: email, role: 'volunteer'});
+    const userID = await findUser({email: email, role: 'volunteer'});
     const user = await db.collection('volunteer').findOne({_id: userID});
     if (ifEmpty(user))
     {
@@ -409,7 +409,7 @@ router.get('/getTasks', async(req, res) =>
 router.post('/edit', async(req, res) =>
 {
     const {first_name, last_name, location, accepted_distance, email} = req.body;
-    const userID = findUser({email: email, role: 'volunteer'});
+    const userID = await findUser({email: email, role: 'volunteer'});
 
     const user = await db.collection('volunteer').findOne({_id: userID});
     if (ifEmpty(user))

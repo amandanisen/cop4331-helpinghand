@@ -141,7 +141,7 @@ router.get('/verify/:token', async(req, res) => {
 router.post('/login', async(req, res) =>
 {
     // input: email, password
-    // output: id, firstName, lastName, error
+    // output: id, firstName, lastName, errors
     const db = client.db();
     const {email, password} = req.body;
 

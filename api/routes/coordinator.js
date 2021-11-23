@@ -50,7 +50,7 @@ router.post('/register', async(req, res) =>
         role: 'Coordinator'
     };
 
-    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}};
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: {}};
 
     // check validity of input
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
@@ -95,7 +95,7 @@ router.post('/register', async(req, res) =>
                 responsePackage.error.database = 'could not insert coordinator';
                 return res.status(400).json(responsePackage);
             }
-            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: {}};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, email: email, error: {}};
             
 
             // Send verification email

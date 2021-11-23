@@ -76,7 +76,7 @@ router.post('/find', async(req, res) =>
       return res.status(400).json("Couldn't find user");
     }
     let searchRange = user.vol_accepted_distance * 1609.34;
-    await db.collection('tasks').find({task_location:
+    db.collection('tasks').find({task_location:
       {$near:
         {
           $geometry: {type: "Point", coordinates: user.vol_location.coordinates},

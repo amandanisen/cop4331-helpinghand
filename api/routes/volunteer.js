@@ -387,10 +387,9 @@ router.get('/tasks', async(req, res) =>
     // Input: email
     // Output: array of tasks
     const db = client.db();
-    const coordID = await findUser({email: req.body.email, role: 'volunteer'});
     var taskIDs = [];
     var ret = [];
-    taskIDs = await db.collection('volunteer').findOne({_id: coordID}, {_id: 0, task_arr: 1});
+    taskIDs = await db.collection('volunteer').findOne({vol_email: req.body.email}, {_id: 0, task_arr: 1});
     taskIDs = taskIDs.task_arr;
 
     async function getTask(data){

@@ -197,10 +197,9 @@ router.get('/verify/:token', async(req, res) => {
 
 router.get('/tasks', async(req, res) => {
     const db = client.db();
-    const coordID = await findUser({email: req.body.email, role: 'coordinator'});
     var taskIDs = [];
     var ret = [];
-    taskIDs = await db.collection('coordinator').findOne({_id: coordID}, {_id: 0, task_arr: 1});
+    taskIDs = await db.collection('coordinator').findOne({coord_email: req.body.email}, {_id: 0, task_arr: 1});
     taskIDs = taskIDs.task_arr;
 
     async function getTask(data){

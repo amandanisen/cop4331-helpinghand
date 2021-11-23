@@ -12,6 +12,8 @@ import { useHistory } from "react-router-dom";
 import Appbar from "../appbar/appbar.js";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
+import AutoComplete from "react-google-autocomplete";
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 
 const utilStyles = makeStyles((theme) => ({
 	fields: {
@@ -101,6 +103,10 @@ const useStyles = makeStyles((theme) => ({
 export default function EventRegistrationForm() {
 	const utilStyle = utilStyles();
 	const classes = useStyles();
+	const [place, setLocation] = useState(null);
+	const [lat, setLat] = useState("");
+	const [long, setLong] = useState("");
+	const [date, setDate] = React.useState(new Date("2014-08-18"));
 
 	const [description, setDescription] = useState(""); // '' is the initial state value
 	const [title, setTitle] = useState(""); // '' is the initial state value
@@ -187,16 +193,38 @@ export default function EventRegistrationForm() {
 								id="maxVol"
 								onChange={(event) => setMaxVol(event.target.value)}
 							/>
-							<TextField
-								marginBottom="normal"
+
+							<AutoComplete
+								placeholder="Location*"
+								apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
 								required
-								fullWidth
-								name="maxVol"
-								label="Number of Volunteers"
-								type="maxVol"
-								id="maxVol"
-								onChange={(event) => setMaxVol(event.target.value)}
+								style={{
+									width: "100%",
+									fontSize: 16,
+									// height: 60,
+									marginTop: "1.5rem",
+									marginBottom: "0.5rem",
+									// backgroundColor: "#eee",
+									display: "inline-block",
+									borderBottom: "1px solid rgb(112, 111, 111)",
+								}}
+								//  predefinedPlacesDescription: {
+								//    color: '#1faadb',
+								//  }, }}
+								variant="outlined"
+								onPlaceSelected={(place) => setLocation(place)}
+								options={{
+									types: ["address"],
+									componentRestrictions: { country: "us" },
+								}}
 							/>
+							{/* <DesktopDatePicker
+								label="Date"
+								inputFormat="MM/dd/yyyy"
+								value={date}
+								// onChange={(date) => setDate(date)}
+								// renderInput={(params) => <TextField {...params} />}
+							/> */}
 
 							<Grid container></Grid>
 
@@ -204,6 +232,7 @@ export default function EventRegistrationForm() {
 								className={classes.buttonColor}
 								type="submit"
 								fullWidth
+								style={{ marginTop: "1.5rem" }}
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
 							>

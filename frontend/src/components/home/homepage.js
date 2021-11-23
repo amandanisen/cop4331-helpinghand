@@ -119,7 +119,7 @@ const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
         if(role == "Volunteer"){
           history.push("/findtask");
         }else{
-          history.push("/coordinatorpage");
+          history.push("/coordinatorPage");
         }
       }
     } catch (e) {

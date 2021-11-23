@@ -1,10 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import HomePage from './components/login/volunteerLogin.js'
+import HomePage from './components/home/homepage.js'
 import VolunteerPage from './components/volunteertaskspage/volunteertasks.js'
 import AccessCodePage from './components/accesscodepage/acesscodepage.js';
-import VolunteerLogin from './components/login/volunteerLogin';
+import VolunteerLogin from './components/home/homepage';
 import CoordinatorPage from './components/coordinatorpage/coordinatorpage.js'
 import EventRegistrationForm from './components/eventRegistration/eventRegistration.js'
 import EventConfirmation from './components/eventconfirmation/eventconfirmation.js'
@@ -70,12 +70,12 @@ function App() {
           <Route path="/coordinatorPage">
             <CoordinatorPage />
           </Route>
-          <Route path="/coordinatorPage">
+          {/* <Route path="/coordinatorPage">
             <CoordinatorPage />
           </Route>
           <Route path="/coordinatorPage">
             <CoordinatorPage />
-          </Route>
+          </Route> */}
           <Route path="/findTaskPage">
             <FindTaskPage />
           </Route>

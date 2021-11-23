@@ -81,7 +81,7 @@ export default function VolunteerPage(props) {
 
   return (
     <div>
-      <Appbar title="Volunteer's Tasks Summary" />
+      <Appbar title="Volunteer's Tasks" />
       <Grid
           container
           direction="row"

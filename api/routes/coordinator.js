@@ -196,12 +196,12 @@ router.get('/verify/:token', async(req, res) => {
 })
 
 router.get('/tasks', async(req, res) => {
+    // Input: email
+    // Output: array of tasks
     const db = client.db();
-    var taskIDs = [];
+    var user;
     var ret = [];
-    taskIDs = await db.collection('coordinator').findOne({coord_email: req.body.email}, {_id: 0, task_arr: 1});
-    taskIDs = taskIDs.task_arr;
-
+    
     async function getTask(data){
         var obj = await db.collection('tasks').findOne({_id: data});
         return obj;
@@ -211,14 +211,18 @@ router.get('/tasks', async(req, res) => {
         res.status(200).json(ret);
     }
     var items = 0;
-
-    taskIDs.forEach(async(item, index, array) => {
-        await ret.push(await getTask(item));
-        items++;
-        if(items === array.length)
-        {
-            callback();
-        }
+    user = await db.collection('coordinator').findOne({coord_email: req.body.email}, {_id: 0, task_arr: 1}).then((result) => {
+        if (result == null)
+            return res.status(400).json("no such user found");
+        var taskIDs = result.task_arr;
+        taskIDs.forEach(async(item, index, array) => {
+            await ret.push(await getTask(item));
+            items++;
+            if(items === array.length)
+            {
+                callback();
+            }
+        });
     });
 })
 

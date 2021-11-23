@@ -52,7 +52,7 @@ router.post('/register', async(req, res) =>
         accepted_distance: accepted_distance,
         role: 'Volunteer'
     };
-    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}}
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: {}}
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
     if (!isValid)
     {
@@ -91,7 +91,7 @@ router.post('/register', async(req, res) =>
                 error.database = 'could not insert volunteer';
                 return res.status(400).json({id: -1, first_name: '', last_name: '', error: error});
             }
-            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, email: email, error: error};
 
             let to = newVol.vol_email;
 

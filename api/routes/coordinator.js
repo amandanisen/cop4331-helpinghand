@@ -132,7 +132,7 @@ router.post('/login', async(req, res) =>
     {
         return res.status(400).json(validity.errors);
     }
-    var responsePackage = {id: -1, first_name: '', last_name: '', error};
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: ''};
 
     // ensure that the email exists & has been verified
     var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
@@ -149,6 +149,7 @@ router.post('/login', async(req, res) =>
                     key.secretOrKey,
                     {expiresIn: 3600},
                     (err, token) => {
+                        responsePackage = {id: results._id, first_name: results.coord_first_name, last_name: results.coord_last_name, email: coord_email, error: ''}
                         return res.status(200).json(payload);
                     }
                 );

@@ -382,28 +382,35 @@ router.post('/removeTask', async(req, res) =>
     }
 })
 
-router.get('/getTasks', async(req, res) => 
+router.get('/tasks', async(req, res) => 
 {
-    // Input: userID
+    // Input: email
     // Output: array of tasks
     const db = client.db();
-    const {email} = req.body;
-    const userID = await findUser({email: email, role: 'volunteer'});
-    const user = await db.collection('volunteer').findOne({_id: userID});
-    if (ifEmpty(user))
-    {
-        return res.status(400).json("cannot find user");
+    const coordID = await findUser({email: req.body.email, role: 'volunteer'});
+    var taskIDs = [];
+    var ret = [];
+    taskIDs = await db.collection('volunteer').findOne({_id: coordID}, {_id: 0, task_arr: 1});
+    taskIDs = taskIDs.task_arr;
+
+    async function getTask(data){
+        var obj = await db.collection('tasks').findOne({_id: data});
+        return obj;
     }
 
-    if (ifEmpty(user.task_arr))
-    {
-        return res.status(200).json(null);
-    }   
+    function callback() {
+        res.status(200).json(ret);
+    }
+    var items = 0;
 
-    let taskArr = await db.collection('tasks').find({_id: {$in: user.task_arr}}).toArray();
-    console.log(taskArr);
-
-    res.status(200).json(taskArr);
+    taskIDs.forEach(async(item, index, array) => {
+        await ret.push(await getTask(item));
+        items++;
+        if(items === array.length)
+        {
+            callback();
+        }
+    });
 })
 
 router.post('/edit', async(req, res) =>

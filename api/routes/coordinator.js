@@ -199,14 +199,28 @@ router.get('/tasks', async(req, res) => {
     const db = client.db();
     const coordID = await findUser({email: req.body.email, role: 'coordinator'});
     var taskIDs = [];
-    var ret;
+    var ret = [];
     taskIDs = await db.collection('coordinator').findOne({_id: coordID}, {_id: 0, task_arr: 1});
     taskIDs = taskIDs.task_arr;
-    ret = await taskArr({task_arr: taskIDs});
 
-    
-    console.log(ret);
-    res.status(200).json(ret);
+    async function getTask(data){
+        var obj = await db.collection('tasks').findOne({_id: data});
+        return obj;
+    }
+
+    function callback() {
+        res.status(200).json(ret);
+    }
+    var items = 0;
+
+    taskIDs.forEach(async(item, index, array) => {
+        await ret.push(await getTask(item));
+        items++;
+        if(items === array.length)
+        {
+            callback();
+        }
+    });
 })
 
 module.exports = router;

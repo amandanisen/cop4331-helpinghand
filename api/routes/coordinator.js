@@ -9,7 +9,6 @@ const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const buildPath = require('../../frontend/src/redux/buildPath');
 const findUser = require('../utilities/findUser');
-const taskArr = require('../utilities/taskArr');
 
 // Connect to mongo
 require('dotenv').config();
@@ -100,7 +99,7 @@ router.post('/register', async(req, res) =>
             
 
             // Send verification email
-            let to = [newCoord.coord_email];
+            let to = newCoord.coord_email;
 
             let sub = "Confirm Registration";
 
@@ -215,14 +214,17 @@ router.get('/tasks', async(req, res) => {
         if (result == null)
             return res.status(400).json("no such user found");
         var taskIDs = result.task_arr;
-        taskIDs.forEach(async(item, index, array) => {
-            await ret.push(await getTask(item));
-            items++;
-            if(items === array.length)
-            {
-                callback();
-            }
-        });
+        if (taskIDs == null || taskIDs.length == 0)
+            callback();
+        else 
+            taskIDs.forEach(async(item, index, array) => {
+                await ret.push(await getTask(item));
+                items++;
+                if(items === array.length)
+                {
+                    callback();
+                }
+            });
     });
 })
 

@@ -93,7 +93,7 @@ router.post('/register', async(req, res) =>
             }
             responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
 
-            let to = [newVol.vol_email];
+            let to = newVol.vol_email;
 
             let sub = "Confirm Registration";
 
@@ -116,7 +116,7 @@ router.get('/verify/:token', async(req, res) => {
     const db = client.db();
 
     const results = await db.collection('volunteer').find({token: token, token_used: 'f'})
-    var responsePackage = {success: false, error};
+    var responsePackage = {success: false, error: ''};
 
     if (results.length == 0)
     {
@@ -209,7 +209,7 @@ router.post('/forgot', async(req, res) =>
         await db.collection('volunteer').updateOne({vol_email: email}, {$set: {password_token: resetToken,
             password_token_used: "f"}});
 
-        let to = [email];
+        let to = email;
 
         let sub = "Reset password";
 
@@ -259,7 +259,7 @@ router.post('/reset/:token', async(req, res) =>
                     password_token_used: "t"});
                 if (update.modifiedCount > 0)
                 {
-                    const to = [checkExistence.vol_email];
+                    const to = checkExistence.vol_email;
                     const sub = "Password changed for your account";
                     const txt = `The password for your account registered under ${
                         checkExistence.vol_email

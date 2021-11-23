@@ -63,7 +63,7 @@ router.post('/create', async(req, res) =>
 
 });
 
-router.post('/find', async(req, res) =>
+router.get('/find', async(req, res) =>
 {
   // input: latitude, longitude (of the volunteer searching), range
   // out: list of tasks

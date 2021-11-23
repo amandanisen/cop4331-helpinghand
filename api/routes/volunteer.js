@@ -399,7 +399,7 @@ router.get('/tasks', async(req, res) =>
         res.status(200).json(ret);
     }
     var items = 0;
-    user = await db.collection('volunteer').findOne({vol_email: req.body.email}, {_id: 0, task_arr: 1}).then((result) => {
+    user = await db.collection('volunteer').findOne({vol_email: req.params.email}, {_id: 0, task_arr: 1}).then((result) => {
         if (result == null)
             return res.status(400).json("no such user found");
         var taskIDs = result.task_arr;

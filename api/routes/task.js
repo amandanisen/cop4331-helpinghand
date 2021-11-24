@@ -63,13 +63,12 @@ router.post('/create', async(req, res) =>
 
 });
 
-router.get('/find+:email', async(req, res) =>
+router.get('/find:email', async(req, res) =>
 {
   // input: email
   // out: list of tasks
   const db = client.db();
   const {email} = req.params;
-
   await db.collection('volunteer').findOne({vol_email: email}).then( (user) => {
     if (user == null)
     {
@@ -79,7 +78,7 @@ router.get('/find+:email', async(req, res) =>
     db.collection('tasks').find({task_location:
       {$near:
         {
-          $geometry: {type: "Point", coordinates: user.vol_location.coordinates},
+          $geometry: {type: "Point", coordinates: user.vol_location.coordinates.map(Number)},
           $minDistance: 0,
           $maxDistance: searchRange
         }

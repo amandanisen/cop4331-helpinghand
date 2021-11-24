@@ -12,7 +12,9 @@ export default function VolunteerPage(props) {
   const [tasks, setTasks] = useState([]);
   const [selected, setSelected] = useState({});
   let idTrack = useRef(null);
-  var user_data = localStorage.getItem("user_data");
+  var user_data = JSON.parse(localStorage.getItem("user_data"));
+  var user_email = user_data.id;
+  console.log(user_email);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function VolunteerPage(props) {
   useEffect(() => {
     async function handleSubmit() {
       console.log(buildPath("/vol/tasks"));
-      var obj = { email: user_data.id };
+      var obj = { email: user_email };
       var js = JSON.stringify(obj);
       console.log(js);
 
@@ -55,9 +57,7 @@ export default function VolunteerPage(props) {
           if (res != "no such user found") {
             setPosts(res);
           } else {
-            console.log(
-              "The call might have failed above but its okay , there were no tasks"
-            );
+            console.log("User not found error");
           }
           return res;
         }
@@ -96,7 +96,7 @@ export default function VolunteerPage(props) {
   };
 
   function generateCards() {
-    if (posts.length < 1) {
+    if (posts.length > 0) {
       return posts.map((task, index) => (
         <Grid item key={"Task" + task.id}>
           <TaskCard

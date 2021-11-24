@@ -423,38 +423,38 @@ router.post('/tasks', async(req, res) =>
 
 router.post('/edit', async(req, res) =>
 {
+    const db = client.db();
     const {first_name, last_name, location, accepted_distance, email} = req.body;
-    const userID = await findUser({email: email, role: 'volunteer'});
 
-    const user = await db.collection('volunteer').findOne({_id: userID});
+    const user = await db.collection('volunteer').findOne({vol_email: email});
     if (ifEmpty(user))
     {
         return res.status(400).json({success: false});
     }
 
     if (!ifEmpty(location))
-        await db.collection('volunteer').updateOne({_id: userID},
+        await db.collection('volunteer').updateOne({vol_email: email},
         {
             $set: {
                 vol_location: location
             }
         });
     if (!ifEmpty(accepted_distance))
-        await db.collection('volunteer').updateOne({_id: userID},
+        await db.collection('volunteer').updateOne({vol_email: email},
         {
             $set: {
                 vol_accepted_distance: accepted_distance
             }
         });
     if (!ifEmpty(first_name))
-        await db.collection('volunteer').updateOne({_id: userID},
+        await db.collection('volunteer').updateOne({vol_email: email},
         {
             $set:{
                 vol_first_name: first_name
             }
         });
     if (!ifEmpty(last_name))
-        await db.collection('volunteer').updateOne({_id: userID},
+        await db.collection('volunteer').updateOne({vol_email: email},
         {
             $set:{
                 vol_last_name: last_name

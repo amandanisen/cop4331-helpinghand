@@ -42,13 +42,15 @@ function Edit(props) {
   const [distance, setDistance] = useState(0);
   const [radius, setRadius] = useState(0);
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('')
   const [location, setLocation] = useState(null); 
   const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
   console.log(location);
   async function handleEdit(event)
     {
         event.preventDefault();
-        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance};
+        var user = localStorage.getItem("user_data")
+        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, email:user.email };
         var js = JSON.stringify(obj);
         
         try
@@ -63,7 +65,6 @@ function Edit(props) {
             }
             else
             {
-                // var user = {first_name: res.first_name, last_name: res.last_name, location: res.location, accepted_distance: res.accepted_distance, radius: res.radius};
                 // var user = {first_name: res.first_name, last_name: res.last_name, email: res.email};
                 // localStorage.setItem('user_data', JSON.stringify(user));
 

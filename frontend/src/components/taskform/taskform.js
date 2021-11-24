@@ -13,7 +13,13 @@ import Appbar from "../appbar/appbar.js";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import AutoComplete from "react-google-autocomplete";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import DateFnsUtils from "@date-io/date-fns";
+
+import {
+	KeyboardDatePicker,
+	MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+const buildPath = require("../../redux/buildPath");
 
 const utilStyles = makeStyles((theme) => ({
 	fields: {
@@ -114,24 +120,57 @@ export default function EventRegistrationForm() {
 	const [maxVol, setMaxVol] = useState(""); // '' is the initial state value
 	let res;
 	let history = useHistory();
+	const [selectedDate, handleDateChange] = useState(new Date());
+	var user_data = localStorage.getItem("user_data");
 
-	function handleSubmit() {
-		axios
-			.post("/task", {
-				name: title,
-				description: description,
-				volunteer_limit: maxVol,
-				task_location: locationInput,
-				area_id: 1,
-			})
-			.then(function (response) {
-				console.log(response);
-				history.push("/volunteerPage");
-			})
-			.catch(function (error) {
-				console.log(error);
+	async function handleSubmit(event) {
+		// role has just been added , Api needs to add to api call console.log(role);
+		// and make the call based on the value of role
+		// register role as well i assume
+		event.preventDefault();
+
+		if (place != null) {
+			console.log(place.formatted_address);
+			var lati = place.geometry.location.lat();
+			var lng = place.geometry.location.lng();
+			console.log(lati, lng);
+		}
+
+		var obj = {
+			name: title,
+			description: description,
+			date: selectedDate,
+			max_slots: maxVol,
+			latitude: lati,
+			longitude: lng,
+			coordID: user_data.id,
+		};
+		var js = JSON.stringify(obj);
+
+		try {
+			const response = await fetch(buildPath("/task/create"), {
+				method: "POST",
+				body: js,
+				headers: { "Content-Type": "application/json" },
 			});
+
+			var res = JSON.parse(await response.text());
+			if (res.id < 0) {
+				// setMessage(res.error);
+			} else {
+				var user = {
+					id: res.id,
+				};
+				console.log(user);
+
+				history.push("/coordinatorPage");
+			}
+		} catch (e) {
+			alert(e.toString());
+			return;
+		}
 	}
+
 	return (
 		<>
 			<Appbar title={"Create New Task"} />
@@ -218,13 +257,22 @@ export default function EventRegistrationForm() {
 									componentRestrictions: { country: "us" },
 								}}
 							/>
-							{/* <DesktopDatePicker
-								label="Date"
-								inputFormat="MM/dd/yyyy"
-								value={date}
-								// onChange={(date) => setDate(date)}
-								// renderInput={(params) => <TextField {...params} />}
-							/> */}
+							<MuiPickersUtilsProvider
+								style={{ marginTop: "1.5rem" }}
+								utils={DateFnsUtils}
+							>
+								<KeyboardDatePicker
+									style={{ marginTop: "1.5rem" }}
+									autoOk
+									variant="inline"
+									inputVariant="outlined"
+									label="Date of Task"
+									format="MM/dd/yyyy"
+									value={selectedDate}
+									InputAdornmentProps={{ position: "start" }}
+									onChange={(date) => handleDateChange(date)}
+								/>
+							</MuiPickersUtilsProvider>
 
 							<Grid container></Grid>
 

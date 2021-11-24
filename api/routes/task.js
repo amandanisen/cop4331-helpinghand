@@ -63,12 +63,12 @@ router.post('/create', async(req, res) =>
 
 });
 
-router.post('/find', async(req, res) =>
+router.get('/find+:email', async(req, res) =>
 {
-  // input: latitude, longitude (of the volunteer searching), range
+  // input: email
   // out: list of tasks
   const db = client.db();
-  const {email} = req.body;
+  const {email} = req.params;
 
   await db.collection('volunteer').findOne({vol_email: email}).then( (user) => {
     if (user == null)

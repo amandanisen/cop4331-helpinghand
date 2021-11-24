@@ -14,6 +14,6 @@ module.exports = async function findUser(data) {
         id = await db.collection(role).findOne({vol_email: email});
     else 
         id = await db.collection(role).findOne({coord_email: email});
-
+    if (id == null) return null;
     return id._id;
 }

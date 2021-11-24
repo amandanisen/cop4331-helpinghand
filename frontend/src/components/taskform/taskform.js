@@ -121,7 +121,9 @@ export default function EventRegistrationForm() {
   let res;
   let history = useHistory();
   const [selectedDate, handleDateChange] = useState(new Date());
-  var user_data = localStorage.getItem("user_data");
+  var user_data = JSON.parse(localStorage.getItem("user_data"));
+  var user_email = user_data.id;
+  console.log(user_email);
 
   async function handleSubmit(event) {
     // role has just been added , Api needs to add to api call console.log(role);
@@ -143,7 +145,7 @@ export default function EventRegistrationForm() {
       max_slots: maxVol,
       latitude: lati,
       longitude: lng,
-      coordID: user_data.id,
+      email: user_email,
     };
     var js = JSON.stringify(obj);
 

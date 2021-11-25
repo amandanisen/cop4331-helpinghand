@@ -40,8 +40,8 @@ function Edit(props) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [distance, setDistance] = useState(0);
-  const [radius, setRadius] = useState(0);
-  const [message, setMessage] = useState('');
+  // const [radius, setRadius] = useState(0);
+  // const [message, setMessage] = useState('');
   const [email, setEmail] = useState('')
   const [location, setLocation] = useState(null); 
   const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
@@ -49,14 +49,17 @@ function Edit(props) {
   async function handleEdit(event)
     {
         event.preventDefault();
-        var user = localStorage.getItem("user_data")
-        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, email:user.email };
+        var email = localStorage.getItem("email")
+        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, email: email };
+        console.log(obj)
         var js = JSON.stringify(obj);
         
-        try
-        {
-            const response = await fetch(buildPath('/vol/edit'), {method: 'POST',
-                body: js, headers:{'Content-Type':'application/json'}});
+        try {
+          const response = await fetch(buildPath("/vol/edit"), {
+            method: "POST",
+            body: js,
+            headers: { "Content-Type": "application/json" },
+          });
 
             var res = JSON.parse(await response.text());
             if (res.id == -1)
@@ -65,10 +68,6 @@ function Edit(props) {
             }
             else
             {
-                // var user = {first_name: res.first_name, last_name: res.last_name, email: res.email};
-                // localStorage.setItem('user_data', JSON.stringify(user));
-
-                // setMessage('');
                 console.log("Success");
                 history.goBack();
             }
@@ -149,7 +148,7 @@ function Edit(props) {
                 />
               </div>
               
-              <input type = "submit" value = "Edit Details" />
+              <input type = "submit" value = "Edit Details" onClick={handleEdit}/>
             </div>
           </div>
         </form>

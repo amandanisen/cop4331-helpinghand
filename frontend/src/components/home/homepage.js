@@ -25,6 +25,7 @@ import { sizing } from "@mui/system";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import AutoComplete from "react-google-autocomplete";
 
+import "./homepage.css";
 import Particles from "react-tsparticles";
 import "react-tabs/style/react-tabs.css";
 import { FaCentercode } from "react-icons/fa";
@@ -40,13 +41,13 @@ function AccessCodePage(props) {
   const loginBtnProps = useSpring({
     borderBottom: registrationFormStatus
       ? "solid 0px transparent"
-      : "solid 2px #27AE60",
+      : "solid 2px #1059FF",
     color: registrationFormStatus ? "#808080" : "#27AE60",
     fontSize: "15px",
   });
   const registerBtnProps = useSpring({
     borderBottom: registrationFormStatus
-      ? "solid 2px #27AE60"
+      ? "solid 2px #1059FF"
       : "solid 0px transparent",
     color: registrationFormStatus ? "#27AE60" : "#808080",
     fontSize: "15px",

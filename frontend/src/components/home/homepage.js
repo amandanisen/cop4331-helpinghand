@@ -334,7 +334,7 @@ function AccessCodePage(props) {
 
   return (
     <>
-		
+	<div id="particles-js"></div>
       <Appbar title={"Home Julia"}/>
       <Grid container direction="column" justify="center" alignItems="center">
         <Grid

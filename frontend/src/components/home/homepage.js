@@ -222,53 +222,7 @@ function AccessCodePage(props) {
 
   return (
     <>
-      <Appbar title={"Home Julia"} />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Grid
-          className={classes.root}
-          item
-          xs={12}
-          sm={8}
-          md={5}
-          component={Paper}
-          elevation={6}
-          square
-        >
-          <div className={classes.navbuttons}>
-            <animated.button
-              onClick={loginClicked}
-              id="loginBtn"
-              style={loginBtnProps}
-            >
-              Login
-            </animated.button>
-            <animated.button
-              onClick={registerClicked}
-              id="registerBtn"
-              style={registerBtnProps}
-            >
-              Register
-            </animated.button>
-          </div>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              width: "400px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Grid item className={classes.tabPanel}>
-              <img className={classes.image} src="/images/Logo.png"></img>
-            </Grid>
-            {roleShown ? getLogin() : getRegister()}
-          </Box>
-        </Grid>
-      </Grid>
-
-	  <Particles
+			  <Particles
         id="tsparticles"
         options={{
           background: {
@@ -349,6 +303,51 @@ function AccessCodePage(props) {
           detectRetina: true,
         }}
       />
+      <Appbar title={"Home Julia"} />
+      <Grid container direction="column" justify="center" alignItems="center">
+        <Grid
+          className={classes.root}
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          square
+        >
+          <div className={classes.navbuttons}>
+            <animated.button
+              onClick={loginClicked}
+              id="loginBtn"
+              style={loginBtnProps}
+            >
+              Login
+            </animated.button>
+            <animated.button
+              onClick={registerClicked}
+              id="registerBtn"
+              style={registerBtnProps}
+            >
+              Register
+            </animated.button>
+          </div>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              width: "400px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Grid item className={classes.tabPanel}>
+              <img className={classes.image} src="/images/Logo.png"></img>
+            </Grid>
+            {roleShown ? getLogin() : getRegister()}
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 

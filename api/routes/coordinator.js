@@ -204,14 +204,15 @@ router.post('/tasks', async(req, res) => {
     
     async function getTask(data){
         var obj = await db.collection('tasks').findOne({_id: data});
+        
         return obj;
     }
 
     function callback() {
-        res.status(200).json(ret);
+        return res.status(200).json(ret);
     }
     var items = 0;
-    user = await db.collection('coordinator').findOne({coord_email: req.body.email}, {_id: 0, task_arr: 1}).then((result) => {
+    user = await db.collection('coordinator').findOne({coord_email: req.body.email}).then((result) => {
         if (result == null)
             return res.status(400).json("no such user found");
         var taskIDs = result.task_arr;
@@ -227,6 +228,6 @@ router.post('/tasks', async(req, res) => {
                 }
             });
     });
-})
+});
 
 module.exports = router;

@@ -16,6 +16,7 @@ const findUser = require('../utilities/findUser');
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
 const MongoClient = require('mongodb').MongoClient;
+const { response } = require("express");
 const client = new MongoClient(url);
 client.connect();
 
@@ -426,10 +427,12 @@ router.post('/edit', async(req, res) =>
     const db = client.db();
     const {first_name, last_name, location, accepted_distance, email} = req.body;
 
+    var responsePackage = {success: false, changed: []};
+
     const user = await db.collection('volunteer').findOne({vol_email: email});
     if (ifEmpty(user))
     {
-        return res.status(400).json({success: false});
+        return res.status(400).json(responsePackage);
     }
 
     if (!ifEmpty(location))

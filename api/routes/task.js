@@ -40,7 +40,8 @@ router.post('/create', async(req, res) =>
       error = errors;
       return res.status(400).json({id: -1, error});
     }
-    const{name, description, date, max_slots} = req.body;
+    
+    const{name, description, date, max_slots, email} = req.body;
     const location = {type: "Point", coordinates: [req.body.longitude, req.body.latitude]};
 
     const newTask = {task_name: name, task_description: description, 
@@ -48,17 +49,25 @@ router.post('/create', async(req, res) =>
         vol_arr: []};
     
     const db = client.db();
+    
     const result = await db.collection('tasks').insertOne(newTask);
 
     var ret = {id: result.insertedId, error: error};
-    var coord = await db.collection('coordinator').updateOne({_id: await findUser({email: req.body.email, role: 'coordinator'})}, 
+    var coord = await db.collection('coordinator').updateOne({coord_email: email}, 
       {
         $push: 
         {
           task_arr: ret.id
         }
       }
-      );
+      ).then( (result) => {
+        if (result.modifiedCount == 0)
+        {
+          db.collection('tasks').findOneAndDelete({_id: ret.id});
+          return res.status(400).json("could not find user, task not created");
+        }
+      });
+    
     res.status(200).json(ret);
 
 });
@@ -89,6 +98,37 @@ router.get('/find:email', async(req, res) =>
     
   });
 
+})
+
+router.post('/remove', async(req, res) => {
+  // Input: email, taskID
+  const db = client.db();
+  const {email, taskID} = req.body;
+
+  db.collection('coordinator').findOneAndUpdate(
+    {
+      $and: [
+        {coord_email: email},
+        {task_arr: taskID}
+      ]
+    },
+    {
+      $pull: {task_arr: taskID}
+    }
+  ).then( async(coord) => {
+    if (coord.lastErrorObject.updatedExisting == false)
+    {
+      return res.status(400).json("Cannot find that coordinator with this task");
+    }
+    db.collection('tasks').findOneAndDelete({_id: taskID}).then( async(result) => {
+      console.log("result: " + result.value);
+      if (result == null)
+      {
+        return res.status(400).json("Cannot find task");
+      }
+      return res.status(200).json({success: true});
+    })
+  })
 })
 
 module.exports = router;

@@ -220,7 +220,7 @@ function AccessCodePage(props) {
 
 	return (
 		<>
-			<Appbar title={"Home Page"} />
+			<Appbar title={"Home Julia"} />
 			<Grid container direction="column" justify="center" alignItems="center">
 				<Grid
 					className={classes.root}

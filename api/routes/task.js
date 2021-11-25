@@ -123,7 +123,7 @@ router.post('/remove', async(req, res) => {
       return res.status(400).json("Cannot find that coordinator with this task");
     }
     db.collection('tasks').findOneAndDelete({_id: task}).then( async(result) => {
-      console.log("result: " + result.value);
+      
       if (result == null)
       {
         return res.status(400).json("Cannot find task");

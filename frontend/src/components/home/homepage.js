@@ -222,7 +222,7 @@ function AccessCodePage(props) {
 
   return (
     <>
-			  <Particles
+		<Particles
         id="tsparticles"
         options={{
           background: {

@@ -25,6 +25,7 @@ import { sizing } from "@mui/system";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import AutoComplete from "react-google-autocomplete";
 
+import ParticlesBg from "particles-bg";
 import Particles from "react-tsparticles";
 import "react-tabs/style/react-tabs.css";
 import { FaCentercode } from "react-icons/fa";
@@ -222,7 +223,8 @@ function AccessCodePage(props) {
 
   return (
     <>
-      <Appbar title={"Home Julia"} />
+		<ParticlesBg type="custom" config={config} bg={true} />
+      <Appbar title={"Home Julia"}/>
       <Grid container direction="column" justify="center" alignItems="center">
         <Grid
           className={classes.root}

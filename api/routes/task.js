@@ -9,7 +9,8 @@ const findUser = require('../utilities/findUser');
 // Connect to mongo
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
-const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 const client = new MongoClient(url);
 client.connect();
 
@@ -104,23 +105,24 @@ router.post('/remove', async(req, res) => {
   // Input: email, taskID
   const db = client.db();
   const {email, taskID} = req.body;
+  var task = new mongodb.ObjectId(taskID);
 
   db.collection('coordinator').findOneAndUpdate(
     {
       $and: [
         {coord_email: email},
-        {task_arr: taskID}
+        {task_arr: task}
       ]
     },
     {
-      $pull: {task_arr: taskID}
+      $pull: {task_arr: task}
     }
   ).then( async(coord) => {
     if (coord.lastErrorObject.updatedExisting == false)
     {
       return res.status(400).json("Cannot find that coordinator with this task");
     }
-    db.collection('tasks').findOneAndDelete({_id: taskID}).then( async(result) => {
+    db.collection('tasks').findOneAndDelete({_id: task}).then( async(result) => {
       console.log("result: " + result.value);
       if (result == null)
       {

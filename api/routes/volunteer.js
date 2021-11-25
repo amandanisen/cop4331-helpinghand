@@ -282,15 +282,16 @@ router.post('/reset/:token', async(req, res) =>
 
 router.post('/addTask', async(req, res) =>
 {
-    // Input: userID, taskID
+    // Input: email, taskID
     const db = client.db();
     const {email, taskID} = req.body;
+    let task = new mongodb.ObjectId(taskID);
     const userID = await findUser({email: email, role: 'volunteer'});
-    const fill = await db.collection('tasks').findOne({_id: taskID});
+    const fill = await db.collection('tasks').findOne({_id: task});
     var responsePackage = {success: false, error};
     if (!ifEmpty(fill) && fill.slots_available > 0)
     {
-        let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: taskID}});
+        let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: task}});
         
         
         if (ifEmpty(alreadyInList))
@@ -299,7 +300,7 @@ router.post('/addTask', async(req, res) =>
                 {_id: userID},
                 {
                     $push: {
-                        task_arr: taskID
+                        task_arr: task
                     }
                 }
             );
@@ -310,7 +311,7 @@ router.post('/addTask', async(req, res) =>
                         slots_available: fill.slots_available - 1
                     },
                     $push: {
-                        vol_arr: userID
+                        vol_arr: task
                     }
                 }
             );
@@ -345,14 +346,15 @@ router.post('/removeTask', async(req, res) =>
     // Input: userID, taskID
     const db = client.db();
     const {email, taskID} = req.body;
+    let task = new mongodb.ObjectId(taskID);
     const userID = await findUser({email: email, role: 'volunteer'});
     var responsePackage = {success: true, error};
-    const task = await db.collection('tasks').find({_id: taskID, vol_arr: {$eq: userID}});
+    const task = await db.collection('tasks').find({_id: task, vol_arr: {$eq: userID}});
 
     if (!ifEmpty(task))
     {
         let taskUpdate = await db.collection('tasks').updateOne(
-            {_id: taskID},
+            {_id: task},
             {$pull: {
                 vol_arr: userID
             },
@@ -363,7 +365,7 @@ router.post('/removeTask', async(req, res) =>
         let volUpdate = await db.collection('volunteer').updateOne(
             {_id: userID},
             {$pull: {
-                task_arr: taskID
+                task_arr: task
             }
         });
 

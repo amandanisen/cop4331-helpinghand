@@ -259,7 +259,6 @@ function AccessCodePage(props) {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-			  background: linear-gradiend 
             }}
           >
             <Grid item className={classes.tabPanel}>

@@ -250,7 +250,25 @@ function AccessCodePage(props) {
               Register
             </animated.button>
           </div>
-		  <Particles
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              width: "400px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Grid item className={classes.tabPanel}>
+              <img className={classes.image} src="/images/Logo.png"></img>
+            </Grid>
+            {roleShown ? getLogin() : getRegister()}
+          </Box>
+        </Grid>
+      </Grid>
+
+	  <Particles
         id="tsparticles"
         options={{
           background: {
@@ -331,23 +349,6 @@ function AccessCodePage(props) {
           detectRetina: true,
         }}
       />
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              width: "400px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Grid item className={classes.tabPanel}>
-              <img className={classes.image} src="/images/Logo.png"></img>
-            </Grid>
-            {roleShown ? getLogin() : getRegister()}
-          </Box>
-        </Grid>
-      </Grid>
     </>
   );
 

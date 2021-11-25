@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import './edit.css';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import AutoComplete from "react-google-autocomplete";
 
 const buildPath = require('../../redux/buildPath');
 
@@ -41,17 +42,17 @@ function Edit(props) {
   const [distance, setDistance] = useState(0);
   const [radius, setRadius] = useState(0);
   const [message, setMessage] = useState('');
-  const [longitude, setLongitude] = useState(0);
-  const [latitude, setLatitude] = useState(0);
+  const [email, setEmail] = useState('')
   const [location, setLocation] = useState(null); 
   const apiKey = 'AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4';
   console.log(location);
   async function handleEdit(event)
     {
         event.preventDefault();
-        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, radius: radius};
+        var user = localStorage.getItem("user_data")
+        var obj = { first_name: firstName, last_name: lastName, location: location, accepted_distance: distance, email:user.email };
         var js = JSON.stringify(obj);
-
+        
         try
         {
             const response = await fetch(buildPath('/vol/edit'), {method: 'POST',
@@ -64,11 +65,11 @@ function Edit(props) {
             }
             else
             {
-                // var user = {first_name: res.first_name, last_name: res.last_name, location: res.location, accepted_distance: res.accepted_distance, radius: res.radius};
-                var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
-                localStorage.setItem('user_data', JSON.stringify(user));
+                // var user = {first_name: res.first_name, last_name: res.last_name, email: res.email};
+                // localStorage.setItem('user_data', JSON.stringify(user));
 
-                setMessage('');
+                // setMessage('');
+                console.log("Success");
                 history.goBack();
             }
            
@@ -107,33 +108,14 @@ function Edit(props) {
                 />
               </div>
               <div className = "form-group">
-                <label htmlFor='radius'>Radius:</label>
+                <label htmlFor='radius'>Accepted Distance:</label>
                 <input 
                 type = 'text' 
                 name = 'radius' 
                 id = 'radius' 
-                onChange = {(event) => setRadius(event.target.value)}
+                onChange = {(event) => setDistance(event.target.value)}
                 />
               </div>
-              <div className = "form-group">
-                <label htmlFor='last name'>Longitude:</label>
-                <input 
-                type = 'text' 
-                name = 'editLastName' 
-                id = 'editLastName' 
-                onChange = {(event) => setLastName(event.target.value)}
-                />
-              </div>
-              <div className = "form-group">
-                <label htmlFor='radius'>Latitude:</label>
-                <input 
-                type = 'text' 
-                name = 'radius' 
-                id = 'radius' 
-                onChange = {(event) => setRadius(event.target.value)}
-                />
-              </div>
-             
               <div className = "form-group">
                 <label htmlFor='location'>Location:</label>
                 {/* <input 
@@ -142,15 +124,29 @@ function Edit(props) {
                 id = 'editLocation' 
                 onChange = {(event) => setLocation(event.target.value)}
                 /> */}
-                 <GooglePlacesAutocomplete
-                        selectProps={{
-                            location,
-                            onChange: setLocation,
-                        }}
-                        style = {{width: 100}}
-                        apiOptions={{region: 'us' }}
-                        apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
-                    />
+                <AutoComplete
+                  placeholder="Current Location*"
+                  apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+                  required
+                  style={{
+                    width: "100%",
+                    fontSize: 16,
+                    // height: 60,
+                    // margin: "0.5rem",
+                    // backgroundColor: "#eee",
+                    display: "inline-block",
+                    borderBottom: "1px solid rgb(112, 111, 111)",
+                  }}
+                  //  predefinedPlacesDescription: {
+                  //    color: '#1faadb',
+                  //  }, }}
+                  variant="outlined"
+                  onPlaceSelected={(place) => setLocation(place)}
+                  options={{
+                    types: ["address"],
+                    componentRestrictions: { country: "us" },
+                  }}
+                />
               </div>
               
               <input type = "submit" value = "Edit Details" />

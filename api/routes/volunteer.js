@@ -15,7 +15,8 @@ const findUser = require('../utilities/findUser');
 // Connect to mongo
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
-const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 const { response } = require("express");
 const client = new MongoClient(url);
 client.connect();
@@ -288,7 +289,7 @@ router.post('/addTask', async(req, res) =>
     let task = new mongodb.ObjectId(taskID);
     const userID = await findUser({email: email, role: 'volunteer'});
     const fill = await db.collection('tasks').findOne({_id: task});
-    var responsePackage = {success: false, error};
+    var responsePackage = {success: false, error: ''};
     if (!ifEmpty(fill) && fill.slots_available > 0)
     {
         let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: task}});

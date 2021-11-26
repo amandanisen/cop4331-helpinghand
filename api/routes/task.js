@@ -93,7 +93,33 @@ router.get('/find:email', async(req, res) =>
           $maxDistance: searchRange
         }
       }
-    }).toArray().then((results) =>{
+    }).toArray().then( async(results) =>{
+      const userID = await new mongodb.ObjectId(user._id);
+      if (results.length > 0)
+      {
+        
+        // iterate through nearby tasks
+        outer: for (var i = 0; i < results.length; i++)
+        {
+          // check if the user is signed up already or not
+          inner: for (var k = 0; k < results[i].vol_arr.length; k++)
+          {
+            if (userID == results[i].vol_arr[k].toString())
+            {
+              results[i].added = true;
+              continue outer;
+            }
+
+          }
+          //console.log(existence );
+          results[i].added = false;
+          
+        }
+      }
+      else return res.status(200).json([]);
+
+      
+
       return res.status(200).json(results);
     });
     

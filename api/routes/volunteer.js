@@ -306,16 +306,18 @@ router.post('/addTask', async(req, res) =>
                 }
             );
             const taskUpdate = await db.collection('tasks').updateOne(
-                {_id: taskID},
+                {_id: task},
                 {
                     $set: {
                         slots_available: fill.slots_available - 1
                     },
                     $push: {
-                        vol_arr: task
+                        vol_arr: userID
                     }
                 }
             );
+            console.log(update);
+            console.log(taskUpdate);
             if (!ifEmpty(update) && !ifEmpty(taskUpdate))
             {
                 responsePackage.success = true;

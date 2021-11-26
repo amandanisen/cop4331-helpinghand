@@ -83,6 +83,7 @@ export default function SimpleCard(props) {
 				console.log(res.error);
 			} else {
 				console.log("success");
+				window.location.reload(false);
 				//this is a check because the page might render twice and cause the call to fail
 				//if the call fails and res is set then the structure is different from if it returned tasks
 				//and we cans use the same syntax to parse it with map

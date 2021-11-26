@@ -109,12 +109,15 @@ function AccessCodePage(props) {
 			if (res.id < 0) {
 				setMessage(res.error);
 			} else {
+				console.log(res.id);
 				var user = {
 					first_name: res.first_name,
 					last_name: res.last_name,
-					id: res.email,
+					email: res.email,
+					id: res.id,
 				};
 				console.log(user);
+				console.log("userID: ", user.id);
 				localStorage.setItem("user_data", JSON.stringify(user));
 
 				setMessage("");
@@ -172,6 +175,7 @@ function AccessCodePage(props) {
 						first_name: res.first_name,
 						last_name: res.last_name,
 						id: res.id,
+						email: res.email,
 					};
 					localStorage.setItem("user_data", JSON.stringify(user));
 
@@ -209,6 +213,7 @@ function AccessCodePage(props) {
 						first_name: res.first_name,
 						last_name: res.last_name,
 						id: res.id,
+						email: res.email,
 					};
 					localStorage.setItem("user_data", JSON.stringify(user));
 

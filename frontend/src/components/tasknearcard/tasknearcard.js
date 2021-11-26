@@ -15,31 +15,8 @@ import ShareIcon from "@mui/icons-material/Share";
 import VolunteerPage from "../volunteertaskspage/volunteertasks.js";
 import { useHistory } from "react-router-dom";
 
-const initialList = [
-	{
-		id: "4",
-		name: "Feed the Homeless 2.0",
-		location: "Downtown Orlando 2.0",
-		miles: "2.6 miles",
-		description:
-			"This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 2.0",
-		numVol: "2",
-		maxVol: "2",
-		added: "true",
-	},
-	{
-		id: "5",
-		name: "Feed the Homeless 3.0",
-		location: "Downtown Orlando 3.0",
-		miles: "3.6 miles",
-		description:
-			"This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed. 3.0",
-		numVol: "3",
-		maxVol: "4",
-		added: "true",
-	},
-];
 // const [list, setList] = useState(initialList);
+const buildPath = require("../../redux/buildPath");
 
 const useStyles = makeStyles({
 	root: {
@@ -97,25 +74,57 @@ const ExpandMore = styled((props) => {
 	}),
 }));
 
-function handleAdd(prop) {
-	//API call to add task to list
-	initialList.concat({ prop });
-	console.log("Prop: ", prop);
-	// console.log("New List: ", newList);
-
-	console.log("initialList: ", initialList);
-
-	// <VolunteerPage props = initialList/>
-	// setList(newList);
-}
-
 export default function AreaCard(props) {
 	const location = useLocation();
 	let history = useHistory();
-	console.log(props);
+	var user_data = JSON.parse(localStorage.getItem("user_data"));
+	var user_email = user_data.email;
 	// const [selected, setSelected] = useState(false)
 	const classes = useStyles();
 	const bull = <span className={classes.bullet}>•</span>;
+	const [posts, setPosts] = useState([]);
+
+	async function handleSubmit() {
+		console.log(buildPath("/vol/tasks"));
+		console.log(user_data);
+		var obj = { email: user_email, taskID: props.task._id };
+
+		var js = JSON.stringify(obj);
+		console.log(js);
+
+		try {
+			const response = await fetch(buildPath("/vol/addTask"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: js,
+			});
+			console.log(response);
+			var res = JSON.parse(await response.text());
+			console.log(res);
+			if (res.error != null) {
+				console.log(res.error);
+			} else {
+				console.log("success");
+				// window.location.reload(false);
+
+				//this is a check because the page might render twice and cause the call to fail
+				//if the call fails and res is set then the structure is different from if it returned tasks
+				//and we cans use the same syntax to parse it with map
+				if (res != "no such user found") {
+					setPosts(res);
+					history.push({
+						pathname: "/volunteer", // your data array of objects
+					});
+				} else {
+					console.log("User not found error");
+				}
+				return res;
+			}
+		} catch (e) {
+			alert(e.toString());
+			return;
+		}
+	}
 
 	return (
 		<>
@@ -145,12 +154,7 @@ export default function AreaCard(props) {
 						aria-label="add to tasks"
 						variant="contained"
 						key={props.name}
-						onClick={() => {
-							history.push({
-								pathname: "/volunteer",
-								areaAction: props.name, // your data array of objects
-							});
-						}}
+						onClick={handleSubmit}
 					>
 						Add
 					</Button>

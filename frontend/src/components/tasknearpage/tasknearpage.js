@@ -13,9 +13,14 @@ function FindTask(props) {
 
 	const [areas, setAreas] = useState([]);
 	var user_data = JSON.parse(localStorage.getItem("user_data"));
-	var user_email = user_data.id;
+	var user_email = user_data.email;
+	var user_id = user_data.id;
+	console.log(user_data);
+
 	console.log(user_email);
+	console.log(user_id);
 	const [posts, setPosts] = useState([]);
+	const [taskNear, setTasksNear] = useState([]);
 	const [tasks, setTasks] = useState([]);
 	const [selected, setSelected] = useState({});
 	let idTrack = useRef(null);
@@ -51,7 +56,7 @@ function FindTask(props) {
 				});
 				console.log(response);
 				var res = JSON.parse(await response.text());
-				console.log(res);
+				// console.log(res);
 				if (res.error != null) {
 					console.log(res.error);
 				} else {
@@ -60,7 +65,24 @@ function FindTask(props) {
 					//if the call fails and res is set then the structure is different from if it returned tasks
 					//and we cans use the same syntax to parse it with map
 					if (res != "no such user found") {
-						setPosts(res);
+						// console.log("res: ", res);
+						let tmpArray = [];
+						for (var i = 0; i < res.length; i++) {
+							if (!(res[i].vol_arr.indexOf(user_id) > -1)) {
+								tmpArray.push(res[i]);
+								console.log(
+									"does it include? ",
+									res[i].vol_arr,
+									" user id: ",
+									user_id
+								);
+								console.log(res[i].vol_arr.indexOf(user_id) > -1);
+								console.log(tmpArray);
+
+								// setPosts(res);
+							}
+						}
+						setPosts(tmpArray);
 					} else {
 						console.log("User not found error");
 					}
@@ -100,7 +122,10 @@ function FindTask(props) {
 		idTrack.current = id;
 	};
 
+	function handleAdd() {}
+
 	function generateCards() {
+		let newArray = [];
 		if (posts.length > 0) {
 			return posts.map((task, index) => (
 				<Grid item key={"Task" + task.id}>

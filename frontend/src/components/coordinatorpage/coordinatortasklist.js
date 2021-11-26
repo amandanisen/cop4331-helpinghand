@@ -55,7 +55,7 @@ export default function SimpleCard(props) {
 	const classes = useStyles();
 	const [posts, setPosts] = useState([]);
 	var user_data = JSON.parse(localStorage.getItem("user_data"));
-	var user_email = user_data.id;
+	var user_email = user_data.email;
 	const bull = <span className={classes.bullet}>•</span>;
 
 	function cardSelect() {

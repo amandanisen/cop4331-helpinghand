@@ -109,7 +109,7 @@ export default function SimpleCard(props) {
 					</Button>
 					<ButtonLeft aria-label="show more">
 						<Typography color="textSecondary">
-							Available slots :{props.task.slots_available}
+							Available slots : {props.task.slots_available}
 						</Typography>
 					</ButtonLeft>
 				</CardActions>

@@ -13,7 +13,7 @@ export default function VolunteerPage(props) {
 	const [selected, setSelected] = useState({});
 	let idTrack = useRef(null);
 	var user_data = JSON.parse(localStorage.getItem("user_data"));
-	var user_email = user_data.id;
+	var user_email = user_data.email;
 	console.log(user_email);
 	const [posts, setPosts] = useState([]);
 

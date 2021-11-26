@@ -1,83 +1,119 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AreaCard from "../tasknearcard/tasknearcard.js";
 import Grid from "@material-ui/core/Grid";
 import Appbar from "../appbar/appbar.js";
 import { connect } from "react-redux";
 import { setAreas } from "../../redux/actions.js";
+import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+const buildPath = require("../../redux/buildPath");
 
 function FindTask(props) {
-	var user_data = localStorage.getItem("user_data");
-	console.log(user_data);
+	const location = useLocation();
+
 	const [areas, setAreas] = useState([]);
-	let history = useHistory();
-	const areasTest = [
-		{
-			id: "1",
-			name: "Feed the Homeless",
-			location: "Downtown Orlando",
-			miles: "2.5 miles",
-			description:
-				"This is a description of feed the homeless. Need 8 participants to help go around DT Orlando to feed.",
-			numVol: "5",
-			maxVol: "8",
-		},
-		{
-			id: "2",
-			name: "Concert Cleanup",
-			description:
-				"This is a description of concert cleanup. Need 10 participants to help clean after a concert.",
-			location: "Amway Center",
-			miles: "3 miles",
-			numVol: "1",
-			maxVol: "10",
-		},
-		{
-			id: "3",
-			name: "Set up Tents",
-			description:
-				"This is a description of setting up tents. Need 6 participants.",
-			location: "UCF",
-			miles: "15 miles",
-			numVol: "2",
-			maxVol: "6",
-		},
-		{
-			id: "4",
-			name: "Set up Tents 2.0",
-			description:
-				"This 2 is a description of setting up tents. Need 6 participants.",
-			location: "UCF",
-			miles: "15 miles",
-			numVol: "2",
-			maxVol: "6",
-		},
-		{
-			id: "5",
-			name: "Concert Cleanup",
-			description:
-				"This is a description of concert cleanup. Need 10 participants to help clean after a concert.",
-			location: "Amway Center",
-			miles: "3 miles",
-			numVol: "1",
-			maxVol: "10",
-		},
-		{
-			id: "6",
-			name: "Set up Tents",
-			description:
-				"This is a description of setting up tents. Need 6 participants.",
-			location: "UCF",
-			miles: "15 miles",
-			numVol: "2",
-			maxVol: "6",
-		},
-	];
+	var user_data = JSON.parse(localStorage.getItem("user_data"));
+	var user_email = user_data.id;
+	console.log(user_email);
+	const [posts, setPosts] = useState([]);
+	const [tasks, setTasks] = useState([]);
+	const [selected, setSelected] = useState({});
+	let idTrack = useRef(null);
+
 	useEffect(() => {
-		if (props.areas) {
-			setAreas(props.areas);
+		if (props.areas && props.areas.length > 0) {
+			let index = location.state | 0;
+			setTasks(props.areas[index].tasks);
 		}
-	}, props.areas);
+	}, [props.areas]);
+
+	useEffect(() => {
+		if (tasks && tasks.length > 0 && Object.values(selected).length === 0) {
+			let taskObj = {};
+			tasks.forEach((task) => (taskObj[task.id] = false));
+			setSelected(taskObj);
+		}
+	}, [tasks, selected]);
+
+	useEffect(() => {
+		async function handleSubmit() {
+			console.log(buildPath("/vol/tasks"));
+			console.log(user_data);
+			var obj = { email: user_email };
+			var js = JSON.stringify(obj);
+			console.log(js);
+
+			try {
+				const response = await fetch(buildPath("/task/find" + user_email), {
+					method: "GET",
+					headers: { "Content-Type": "application/json" },
+					// body: js,
+				});
+				console.log(response);
+				var res = JSON.parse(await response.text());
+				console.log(res);
+				if (res.error != null) {
+					console.log(res.error);
+				} else {
+					console.log("success");
+					//this is a check because the page might render twice and cause the call to fail
+					//if the call fails and res is set then the structure is different from if it returned tasks
+					//and we cans use the same syntax to parse it with map
+					if (res != "no such user found") {
+						setPosts(res);
+					} else {
+						console.log("User not found error");
+					}
+					return res;
+				}
+			} catch (e) {
+				alert(e.toString());
+				return;
+			}
+		}
+
+		handleSubmit();
+	}, []);
+
+	const handleSelect = (id) => {
+		let newSelected = { ...selected };
+		if (idTrack.current === null) {
+			idTrack.current = id;
+		}
+		if (selected[id]) {
+			// We are leaving the task
+			//Socket.send(JSON.stringify({topic: "task", action: "leave", message: {id: id, action: "Leaving"}}));
+			newSelected[id] = false;
+			setSelected(newSelected);
+		} else {
+			// We are joining the task
+			if (idTrack.current !== id) {
+				//Socket.send(JSON.stringify({topic: "task", action: "leave", message: {id: idTrack.current, action: "Leaving"}}));
+			}
+			//Socket.send(JSON.stringify({topic: "task", action: "join", message: {id: id, action: "Joining"}}));
+			for (const prop in newSelected) {
+				newSelected[prop] = false;
+			}
+			newSelected[id] = true;
+			setSelected(newSelected);
+		}
+		idTrack.current = id;
+	};
+
+	function generateCards() {
+		if (posts.length > 0) {
+			return posts.map((task, index) => (
+				<Grid item key={"Task" + task.id}>
+					<AreaCard
+						selected={selected[task.id]}
+						handleSelected={handleSelect}
+						id={task.id}
+						task={task}
+					/>
+				</Grid>
+			));
+		}
+	}
 
 	return (
 		<div>
@@ -93,7 +129,8 @@ function FindTask(props) {
 				justifyContent="space-evenly"
 				alignItems="flex-start"
 			>
-				{areasTest.map((area, index) => (
+				{generateCards()}
+				{/* {areasTest.map((area, index) => (
 					<Grid item key={"area" + area.id}>
 						<AreaCard
 							name={area.name}
@@ -104,7 +141,7 @@ function FindTask(props) {
 							miles={area.miles}
 						/>
 					</Grid>
-				))}
+				))} */}
 			</Grid>
 		</div>
 	);

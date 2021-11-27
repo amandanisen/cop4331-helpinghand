@@ -73,6 +73,24 @@ router.post('/create', async(req, res) =>
 
 });
 
+function getMiles(lon1, lat1, lon2, lat2)
+{
+    const R = 6371e3; // metres
+    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c; // in metres
+
+    return d/1609.34;
+}
+
 router.get('/find:email', async(req, res) =>
 {
   // input: email
@@ -101,6 +119,11 @@ router.get('/find:email', async(req, res) =>
         // iterate through nearby tasks
         outer: for (var i = 0; i < results.length; i++)
         {
+          // first calculate the distance between the user and the task
+          let dist = getMiles(results[i].task_location.coordinates[0],results[i].task_location.coordinates[1],
+             user.vol_location.coordinates[0], user.vol_location.coordinates[1]);
+          results[i].distance = dist;
+
           // check if the user is signed up already or not
           inner: for (var k = 0; k < results[i].vol_arr.length; k++)
           {

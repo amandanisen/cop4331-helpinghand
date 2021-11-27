@@ -135,15 +135,15 @@ router.post('/login', async(req, res) =>
     var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: ''};
 
     // ensure that the email exists & has been verified
-    var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
+    var results = await db.collection('coordinator').findOne({coord_email: email, email_verified: "t"});
 
     if (!ifEmpty(results))
     {
         // Check if hashed password matches input
-        await bcrypt.compare(password, results.vol_pw).then(isMatch => {
+        await bcrypt.compare(password, results.coord_pw).then(isMatch => {
             if (isMatch) {
-                const payload = {id: results._id, email: results.vol_email, first_name: results.vol_first_name,
-                     last_name: results.vol_last_name};
+                const payload = {id: results._id, email: results.coord_email, first_name: results.coord_first_name,
+                     last_name: results.coord_last_name};
                 jwt.sign(
                     payload,
                     key.secretOrKey,

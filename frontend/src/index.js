@@ -9,13 +9,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import store from './redux/store';
 axios.defaults.baseURL = 'https://helpinghand-cop4331.herokuapp.com/';
 
-if (process.env.NODE_ENV === "production"){
-  App.use(express.static("build"));
-  App.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname,  "build", "index.html"));
-  });
-}
-
 ReactDOM.render(
   <React.StrictMode>
     <ReduxProvider store={store}>

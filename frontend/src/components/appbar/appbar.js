@@ -18,6 +18,8 @@ import { useState } from 'react';
 import './appbar.css';
 import { SidebarData } from '../sidebar/SidebarData.js';
 import Button from 'react-bootstrap/Button';
+import { VscEdit } from "react-icons/vsc";
+import { RiLogoutBoxLine} from "react-icons/ri";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +28,11 @@ const useStyles = makeStyles((theme) => ({
 
     },
     menuButton: {
-        // marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2),
+        backgroundColor: '#005424',
+        color: '#ffff',
+        // borderRadius: 10,
+        // borderWidth: 5,
     },
     title: {
         color: "#FFFFFF",
@@ -36,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
         },
         textAlign: "center",
+        marginRight: '38px',
     },
     backIcon: {
         color: '#FFFFFF',
@@ -71,7 +78,27 @@ export default function Appbar(props) {
     const showSidebar = () => setSidebar(!sidebar);
     
     return (
-            <AppBar position="static" >
+      <>
+      {(props.type === "coordinator")
+        ?
+        <AppBar position="static" >
+            <Toolbar variant="dense" className={classes.root}>
+                <IconButton edge="start" className={classes.menuButton} aria-label="menu">
+                    {/* <ArrowBackIosIcon className={classes.backIcon} /> */}
+                </IconButton >
+                <Typography className={classes.title} variant="h6" noWrap>
+                {props.title}
+                </Typography>
+                {/* <Typography variant="h6" color="inherit">
+                    {props.eventName ? props.eventName : null}  */}
+             {/* </Typography> */}
+             {/* <AddIcon/> */}
+
+            </Toolbar>
+        </AppBar>
+    :
+
+      <AppBar position="static" >
             <Toolbar variant="dense" className={classes.root}>
             <IconContext.Provider value={{ color: '#fff' }}>
             <div className='navbar'>
@@ -86,8 +113,8 @@ export default function Appbar(props) {
                     <AiIcons.AiOutlineClose />
                   </Link>
                 </li>
-                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
-                <Button className= 'button-test'  onClick={() => history.push("/edit")} > test </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > <VscEdit/>edit </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/")} > <RiLogoutBoxLine/>logout </Button>
                 {/* {SidebarData.map((item, index) => {
                   return (
                     <li key={index} className={item.cName}>
@@ -103,7 +130,8 @@ export default function Appbar(props) {
           </IconContext.Provider>
    
              <Typography className={classes.title} variant="h6" noWrap>
-                         Homepage
+             {props.title}
+
                      </Typography>
                      <IconButton
                       alginSelf= 'flex-end' 
@@ -112,10 +140,19 @@ export default function Appbar(props) {
                       color="inherit"
                       aria-label="open drawer"
                   >
-                      <ArrowBackIosIcon onClick={() => history.goBack()} />
+                  {props.title == 'Volunteer Tasks Near You'?  <Button className= 'button-summary'  onClick={() => 
+                  { history.push({
+                    pathname: '/volunteer' // your data array of objects
+                  })} }>Summary</Button> : null }
+                 
+                  {/* <ArrowBackIosIcon className={classes.backIcon} onClick = {() => history.goBack()}/> */}
                   </IconButton>
                  </Toolbar>
              </AppBar>
 
+              }
+                  </>
+
     );
+              
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
-import TaskCard from '../taskcard/taskcard.js'
+import TaskCard from '../volunteertaskcard/taskcard.js'
 import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
 import Typography from '@material-ui/core/Typography';
@@ -38,7 +38,7 @@ function AccessCodePage(props) {
     console.log("Access Code:", accessCode);
     console.log("Full Name:", fullName);
     
-    history.push("/areas");
+    history.push("/findtask");
     // axios.get('/event/' + location.state.role + "/" + accessCode)
     //   .then((response) => {
     //     console.log("Reponse:", response);
@@ -52,7 +52,7 @@ function AccessCodePage(props) {
   
     return (
       <>
-        <Appbar title={location.state.role} />
+         <Appbar title="Homepage test" />
           <form onSubmit={handleSubmit}>
           <Grid container
                 direction="column"

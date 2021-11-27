@@ -22,6 +22,7 @@
   top: 0;
   left: -100%;
   transition: 850ms;
+  z-index: 1;
 }
 
 .nav-menu.active {
@@ -67,7 +68,7 @@
   align-items: center;
 }
 .navbar-button{
-      background-color: #04AA6D;
+      background-color: #005424;
       border: none;
       color: white;
       padding: 20px;
@@ -80,7 +81,7 @@
 .navbar-button2{
   width: 120px;
   height: 60px;
-  background: #04AA6D;
+  background: #000000;
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -89,6 +90,36 @@
   border-radius: 100%;
   border: rgb(53, 0, 177);
 }
+
+.button-summary {
+  background-color: initial;
+  background-image: linear-gradient(-180deg, #005424, #005424);
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:medium;
+  font-weight: bold;
+  height: 36px;
+  line-height: 36px;
+  outline: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  pointer-events: auto;
+  position: relative;
+  text-align: center;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: top;
+  white-space: nowrap;
+  width: 100%;
+  z-index: 9;
+  border: 0;
+  }
+
 
 .button-test {
 background-color: initial;

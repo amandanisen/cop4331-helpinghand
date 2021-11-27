@@ -1,36 +1,28 @@
-const aws = require("aws-sdk");
-// use AWS global variables
-aws.config.accessKeyId;
-aws.config.secretAccessKey;
-aws.config.region = "us-east-2"; // Create a registerEmail function
-function Email(to, sub, content) {
-  let ses = new aws.SES();
+const nodemailer = require("nodemailer");
 
-  let from = "helpinghand.noreply6@gmail.com"; // The email address added here must be verified in Amazon SES
+let mailTransporter = nodemailer.createTransport({
+  service: "hotmail",
+  auth: {
+    user: "helpinghand-111@outlook.com",
+    pass: "Helpinghand1"
+  }
+});
+
+function Email(to, sub, content) {
+  let mailDetails = {
+    from: "helpinghand-111@outlook.com",
+    to: to,
+    subject: sub,
+    html: content
+  }
   //Amazon SES email format
-  ses.sendEmail(
-    {
-      Source: from,
-      Destination: { ToAddresses: to },
-      Message: {
-        Subject: {
-          Data: sub
-        },
-        Body: {
-          Html: {
-            Data: content
-          }
-        }
-      }
-    },
-    function(err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Email sent: " + data);
-      }
+  mailTransporter.sendMail(mailDetails, function(err, data) {
+    if(err) {
+        console.log('Error Occurs');
+    } else {
+        console.log('Email sent successfully ' + data.response);
     }
-  );
+});
 }
 // Export the registerEmail function
 module.exports = {

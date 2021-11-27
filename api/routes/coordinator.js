@@ -8,6 +8,7 @@ const sendEmail = require('../../utilities/sendEmail');
 const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const buildPath = require('../../frontend/src/redux/buildPath');
+const findUser = require('../utilities/findUser');
 
 // Connect to mongo
 require('dotenv').config();
@@ -35,12 +36,12 @@ router.use((req, res, next) =>
 // Create Coordinator
 router.post('/register', async(req, res) =>
 {
-    // input: firstname, lastname, location, email, password1, password 2
+    // input: firstname, lastname, email, password1, password 2
     // output: id, firstname, lastname, error
     let error = {};
     const db = client.db();
 
-    const {email, password1, password2, first_name, last_name, location} = req.body;
+    const {email, password1, password2, first_name, last_name} = req.body;
     const data = 
     {
         email: email,
@@ -49,7 +50,7 @@ router.post('/register', async(req, res) =>
         role: 'Coordinator'
     };
 
-    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}};
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: {}};
 
     // check validity of input
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
@@ -85,8 +86,8 @@ router.post('/register', async(req, res) =>
             // new coord object
             const newCoord = {coord_email: email, 
                     coord_first_name: first_name, coord_last_name: last_name, token: token,
-                    coord_location: location, coord_pw: hash, email_verified: "f",
-                    token_used: "f"};
+                    coord_pw: hash, email_verified: "f",
+                    token_used: "f", task_arr: []};
             const results = await db.collection('coordinator').insertOne(newCoord);
 
             if (results.length == 0)
@@ -94,11 +95,11 @@ router.post('/register', async(req, res) =>
                 responsePackage.error.database = 'could not insert coordinator';
                 return res.status(400).json(responsePackage);
             }
-            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: {}};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, email: email, error: {}};
             
 
             // Send verification email
-            let to = [newCoord.coord_email];
+            let to = newCoord.coord_email;
 
             let sub = "Confirm Registration";
 
@@ -131,35 +132,38 @@ router.post('/login', async(req, res) =>
     {
         return res.status(400).json(validity.errors);
     }
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: ''};
 
     // ensure that the email exists & has been verified
-    var results = await db.collection('volunteer').findOne({vol_email: email, email_verified: "t"});
+    var results = await db.collection('coordinator').findOne({coord_email: email, email_verified: "t"});
 
     if (!ifEmpty(results))
     {
         // Check if hashed password matches input
-        await bcrypt.compare(password, results.vol_pw).then(isMatch => {
+        await bcrypt.compare(password, results.coord_pw).then(isMatch => {
             if (isMatch) {
-                const payload = {id: results._id, email: results.vol_email, first_name: results.vol_first_name,
-                     last_name: results.vol_last_name};
+                const payload = {id: results._id, email: results.coord_email, first_name: results.coord_first_name,
+                     last_name: results.coord_last_name};
                 jwt.sign(
                     payload,
                     key.secretOrKey,
                     {expiresIn: 3600},
                     (err, token) => {
-                        return res.status(200).json(payload);
+                        responsePackage = {id: results._id, first_name: results.coord_first_name, last_name: results.coord_last_name, email: coord_email, error: ''}
+                        return res.status(200).json(responsePackage);
                     }
                 );
                 return;
             } else {
-                return res.status(400).json("Wrong password");
+                responsePackage.error = "Wrong password";
+                return res.status(200).json(responsePackage);
             }
         });
     }
     else
     {
-        error = 'Invalid username/password';
-        return res.status(400).json({id: -1, firstName: '', lastName: '', error: error});
+        responsePackage.error = 'Invalid username/password';
+        return res.status(200).json(responsePackage);
     }
 })
 
@@ -170,19 +174,60 @@ router.get('/verify/:token', async(req, res) => {
     const errors = {};
 
     const results = await db.collection('coordinator').find({token: token, token_used: 'f'})
+    var responsePackage = {success: true, error:''};
 
     if (results.length == 0)
     {
         const emailVerify = await db.collection('coordinator').find({token: token, email_verified: "t"});
         if (emailVerify.length > 0)
-            return res.json("Email has already been verified!");
-        return res.json("Verification token invalid");
+        {
+            responsePackage.error("Email has already been verified");
+            return res.status(200).json(responsePackage);
+        }
+        responsePackage.error = "Verification token invalid";
+        responsePackage.success = false;
+        return res.status(200).json(responsePackage);
     }
 
     const update = await db.collection('coordinator').updateOne({token: token},{$set : {email_verified: "t", token_used: "t"}});
 
-    return res.json("Email verified! Please login to your account");
+    return res.status(200).json(responsePackage);
 
 })
+
+router.post('/tasks', async(req, res) => {
+    // Input: email
+    // Output: array of tasks
+    const db = client.db();
+    var user;
+    var ret = [];
+    
+    async function getTask(data){
+        var obj = await db.collection('tasks').findOne({_id: data});
+        
+        return obj;
+    }
+
+    function callback() {
+        return res.status(200).json(ret);
+    }
+    var items = 0;
+    user = await db.collection('coordinator').findOne({coord_email: req.body.email}).then((result) => {
+        if (result == null)
+            return res.status(400).json("no such user found");
+        var taskIDs = result.task_arr;
+        if (taskIDs == null || taskIDs.length == 0)
+            callback();
+        else 
+            taskIDs.forEach(async(item, index, array) => {
+                await ret.push(await getTask(item));
+                items++;
+                if(items === array.length)
+                {
+                    callback();
+                }
+            });
+    });
+});
 
 module.exports = router;

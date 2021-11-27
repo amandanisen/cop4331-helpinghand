@@ -10,11 +10,14 @@ const key = require("../../utilities/keys");
 const checkReg = require('../validation/registration.js');
 const ifEmpty = require("../validation/checkForEmpty");
 const buildPath = require('../../frontend/src/redux/buildPath');
+const findUser = require('../utilities/findUser');
 
 // Connect to mongo
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
-const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
+const { response } = require("express");
 const client = new MongoClient(url);
 client.connect();
 
@@ -40,7 +43,7 @@ router.post('/register', async(req, res) =>
     let error = {};
     const db = client.db();
 
-    const {email, password1, password2, first_name, last_name, accepted_distance, longitude, latitude} = req.body;
+    const {email, password1, password2, first_name, last_name, accepted_distance, longitude, latitude, address} = req.body;
     const data = 
     {
         email: email,
@@ -51,7 +54,7 @@ router.post('/register', async(req, res) =>
         accepted_distance: accepted_distance,
         role: 'Volunteer'
     };
-    var responsePackage = {id: -1, first_name: '', last_name: '', error: {}}
+    var responsePackage = {id: -1, first_name: '', last_name: '', email: '', error: {}}
     const {errors, isValid} = checkReg.checkRegistrationFields(data);
     if (!isValid)
     {
@@ -65,7 +68,7 @@ router.post('/register', async(req, res) =>
     {
         responsePackage.error.email = 'this email is already in use';
         
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
 
     var token;
@@ -81,7 +84,7 @@ router.post('/register', async(req, res) =>
             const location = {type: "Point", coordinates: [longitude, latitude]};
             const newVol = {vol_accepted_distance: accepted_distance, vol_email: email, 
                     vol_first_name: first_name, vol_last_name: last_name, token: token,
-                    vol_location: location, vol_pw: hash, email_verified: "f",
+                    vol_location: location, vol_pw: hash, email_verified: "f", vol_address: address,
                     token_used: "f", task_arr: []};
             const results = await db.collection('volunteer').insertOne(newVol);
 
@@ -90,9 +93,9 @@ router.post('/register', async(req, res) =>
                 error.database = 'could not insert volunteer';
                 return res.status(400).json({id: -1, first_name: '', last_name: '', error: error});
             }
-            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, error: error};
+            responsePackage = {id: results.insertedId, first_name: first_name, last_name: last_name, email: email, error: error};
 
-            let to = [newVol.vol_email];
+            let to = newVol.vol_email;
 
             let sub = "Confirm Registration";
 
@@ -115,18 +118,24 @@ router.get('/verify/:token', async(req, res) => {
     const db = client.db();
 
     const results = await db.collection('volunteer').find({token: token, token_used: 'f'})
+    var responsePackage = {success: false, error: ''};
 
     if (results.length == 0)
     {
         const emailVerify = await db.collection('volunteer').find({token: token, email_verified: "t"}).toArray();
         if (!ifEmpty(emailVerify))
-            return res.json("Email has already been verified!");
-        return res.json("Verification token invalid");
+        {
+            responsePackage.error = "Email has already been verified";
+            responsePackage.success = true;
+            return res.status(200).json(responsePackage);
+        }
+        responsePackage.error = "Verification token invalid";
+        return res.status(200).json(responsePackage);
     }
 
     const update = await db.collection('volunteer').updateOne({token: token},{$set : {email_verified: "t", token_used: "t"}});
-
-    return res.json("Email verified! Please login to your account");
+    responsePackage.success = true;
+    return res.status(200).json(responsePackage);
 
 })
 
@@ -134,7 +143,7 @@ router.get('/verify/:token', async(req, res) => {
 router.post('/login', async(req, res) =>
 {
     // input: email, password
-    // output: id, firstName, lastName, error
+    // output: id, firstName, lastName, errors
     const db = client.db();
     const {email, password} = req.body;
 
@@ -172,14 +181,14 @@ router.post('/login', async(req, res) =>
             
             } else {
                 responsePackage.errors.password = "Wrong password";
-                return res.status(400).json(responsePackage);
+                return res.status(200).json(responsePackage);
             }
         });
     }
     else
     {
         responsePackage.errors.email = 'Invalid username/password';
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
     
 })
@@ -202,11 +211,11 @@ router.post('/forgot', async(req, res) =>
         await db.collection('volunteer').updateOne({vol_email: email}, {$set: {password_token: resetToken,
             password_token_used: "f"}});
 
-        let to = [email];
+        let to = email;
 
         let sub = "Reset password";
 
-        let link = "https://localhost:3000/vol/reset/" + resetToken;
+        let link = buildPath('/vol/reset/') + resetToken;
 
         let content = 
             "<body><p>Click the link to reset your password</p> <a href=" + 
@@ -220,7 +229,7 @@ router.post('/forgot', async(req, res) =>
     else
     {
         responsePackage.error.email = "This email does not exist or has not been verified";
-        return res.status(400).json(responsePackage);
+        return res.status(200).json(responsePackage);
     }
 })
 
@@ -232,6 +241,13 @@ router.post('/reset/:token', async(req, res) =>
 
     const checkExistence = await db.collection('volunteer').find({password_token: token,
         password_token_used: "f"});
+    
+    if (req.body.password1 != req.body.password2)
+    {
+        responsePackage.success = false;
+        responsePackage.error = "Passwords do not match";
+        return res.status(400).json(responsePackage);
+    }
 
     if (!ifEmpty(checkExistence))
     {
@@ -245,13 +261,14 @@ router.post('/reset/:token', async(req, res) =>
                     password_token_used: "t"});
                 if (update.modifiedCount > 0)
                 {
-                    const to = [checkExistence.vol_email];
+                    const to = checkExistence.vol_email;
                     const sub = "Password changed for your account";
                     const txt = `The password for your account registered under ${
                         checkExistence.vol_email
                       } has been successfully changed.`;
                     sendEmail.Email(to, sub, txt);
-                    res.json("Password successfully changed");
+                    responsePackage.success = true;
+                    return res.status(200).json(responsePackage);
                 }
             })
         })
@@ -259,21 +276,24 @@ router.post('/reset/:token', async(req, res) =>
     else
     {
         responsePackage.error = "invalid token";
-        return res.status(400).json(responsePackage);
+        responsePackage.success = false;
+        return res.status(200).json(responsePackage);
     }
 })
 
 router.post('/addTask', async(req, res) =>
 {
-    
-    // Input: userID, taskID
+    // Input: email, taskID
     const db = client.db();
-    const {userID, taskID} = req.body;
-    const fill = await db.collection('tasks').findOne({_id: taskID});
-
+    const {email, taskID} = req.body;
+    let task = new mongodb.ObjectId(taskID);
+    const userID = await findUser({email: email, role: 'volunteer'});
+    const fill = await db.collection('tasks').findOne({_id: task});
+    var responsePackage = {success: false, error: ''};
     if (!ifEmpty(fill) && fill.slots_available > 0)
     {
-        let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: taskID}});
+        let alreadyInList = await db.collection('volunteer').findOne({_id: userID, task_arr: {$eq: task}});
+        
         
         if (ifEmpty(alreadyInList))
         {
@@ -281,12 +301,12 @@ router.post('/addTask', async(req, res) =>
                 {_id: userID},
                 {
                     $push: {
-                        task_arr: taskID
+                        task_arr: task
                     }
                 }
             );
             const taskUpdate = await db.collection('tasks').updateOne(
-                {_id: taskID},
+                {_id: task},
                 {
                     $set: {
                         slots_available: fill.slots_available - 1
@@ -296,23 +316,29 @@ router.post('/addTask', async(req, res) =>
                     }
                 }
             );
+            
             if (!ifEmpty(update) && !ifEmpty(taskUpdate))
             {
-                res.status(200).json("Task added to user " + userID);
+                responsePackage.success = true;
+                res.status(200).json(responsePackage);
             }
             else
             {
-                res.status(400).json("Task could not be added");
+                responsePackage.error = "Task could not be added";
+                res.status(200).json(responsePackage);
             }
         }
         else
         {
-            res.status(400).json("Already signed up for task");
+            responsePackage.error = "Already signed up for task"
+            res.status(200).json(responsePackage);
         }
     }
     else
     {
-        res.status(400).json("Task is already full")
+        responsePackage.success = false;
+        responsePackage.error = "Task is full";
+        res.status(200).json(responsePackage);
     }
     
 })
@@ -321,14 +347,16 @@ router.post('/removeTask', async(req, res) =>
 {
     // Input: userID, taskID
     const db = client.db();
-    const {userID, taskID} = req.body;
-
-    const task = await db.collection('tasks').find({_id: taskID, vol_arr: {$eq: userID}});
+    const {email, taskID} = req.body;
+    let _task = new mongodb.ObjectId(taskID);
+    const userID = await findUser({email: email, role: 'volunteer'});
+    var responsePackage = {success: true, error: ''};
+    const task = await db.collection('tasks').find({_id: _task, vol_arr: {$eq: userID}});
 
     if (!ifEmpty(task))
     {
         let taskUpdate = await db.collection('tasks').updateOne(
-            {_id: taskID},
+            {_id: _task},
             {$pull: {
                 vol_arr: userID
             },
@@ -339,43 +367,118 @@ router.post('/removeTask', async(req, res) =>
         let volUpdate = await db.collection('volunteer').updateOne(
             {_id: userID},
             {$pull: {
-                task_arr: taskID
+                task_arr: _task
             }
         });
 
         if (ifEmpty(volUpdate) || ifEmpty(taskUpdate))
         {
-            res.status(400).json("Could not update lists");
+            responsePackage.error = "Could not update document";
+            responsePackage.success = false;
+            res.status(200).json(responsePackage);
         }
-        else res.status(200).json("Lists updated");
+        else res.status(200).json(responsePackage);
     }
     else
     {
-        res.status(400).json("Task with this ID doesn't exist/user hasn't signed up for task");
+        responsePackage.success = false;
+        responsePackage.error = "Task with this ID doesn't exist/user hasn't signed up for task";
+        res.status(200).json(responsePackage);
     }
 })
 
-router.get('/getTasks', async(req, res) => 
+router.post('/tasks', async(req, res) => 
 {
-    // Input: userID
+    // Input: email
     // Output: array of tasks
     const db = client.db();
-    const {userID} = req.body;
-    const user = await db.collection('volunteer').find({_id: userID});
-    if (ifEmpty(user))
-    {
-        return res.status(400).json("cannot find user");
+    var user;
+    var ret = [];
+    
+    
+    async function getTask(data){
+        var obj = await db.collection('tasks').findOne({_id: data}).then( (task) => {
+            return task;
+        });
+        return obj;
     }
 
-    if (ifEmpty(user.task_arr))
+    function callback() {
+        res.status(200).json(ret);
+    }
+    var items = 0;
+    user = await db.collection('volunteer').findOne({vol_email: req.body.email}, {_id: 0, task_arr: 1}).then((result) => {
+        if (result == null)
+            return res.status(400).json("no such user found");
+        var taskIDs = result.task_arr;
+        console.log(taskIDs);
+        if (taskIDs == null || taskIDs.length == 0)
+            callback();
+        else 
+            taskIDs.forEach(async(item, index, array) => {
+                await ret.push(await getTask(item));
+                items++;
+                if(items === array.length)
+                {
+                    callback();
+                }
+            });
+    });
+})
+
+router.post('/edit', async(req, res) =>
+{
+    const db = client.db();
+    const {first_name, last_name, longitude, latitude, address, accepted_distance, email} = req.body;
+
+    var responsePackage = {success: false, changed: []};
+
+    const user = await db.collection('volunteer').findOne({vol_email: email});
+    if (ifEmpty(user))
     {
-        return res.status(200).json(null);
-    }   
+        return res.status(400).json(responsePackage);
+    }
 
-    let taskArr = await db.collection('tasks').find({_id: {$in: user.task_arr}}).toArray();
-    console.log(taskArr);
-
-    res.status(200).json(taskArr);
+    if (!ifEmpty(longitude) && !ifEmpty(latitude))
+        await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set: {
+                vol_location: 
+                {
+                    type: "Point",
+                    coordinates: [longitude, latitude]
+                }
+            }
+        });
+    if (!ifEmpty(address))
+    await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set: {
+                vol_address: address
+            }
+        });
+    if (!ifEmpty(accepted_distance))
+        await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set: {
+                vol_accepted_distance: accepted_distance
+            }
+        });
+    if (!ifEmpty(first_name))
+        await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set:{
+                vol_first_name: first_name
+            }
+        });
+    if (!ifEmpty(last_name))
+        await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set:{
+                vol_last_name: last_name
+            }
+        });
+    res.status(200).json({success: true});
 })
 
 module.exports = router;

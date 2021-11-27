@@ -1,0 +1,2 @@
+web: npm install && node server.js
+front: yarn install --prefix ./frontend && yarn start --prefix ./frontend

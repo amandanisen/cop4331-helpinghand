@@ -31,7 +31,7 @@ router.use((req, res, next) =>
 // Create Task
 router.post('/create', async(req, res) =>
 {
-    // input: name, description, date, max_slots, latitude, longitude, email
+    // input: name, description, date, max_slots, latitude, longitude, address,  email
     // return: id, error
     var error = {};
 
@@ -42,11 +42,11 @@ router.post('/create', async(req, res) =>
       return res.status(400).json({id: -1, error});
     }
     
-    const{name, description, date, max_slots, email} = req.body;
+    const{name, description, date, max_slots, email, address} = req.body;
     const location = {type: "Point", coordinates: [req.body.longitude, req.body.latitude]};
 
     const newTask = {task_name: name, task_description: description, 
-        task_date: date, max_slots: max_slots, task_location: location, slots_available: max_slots,
+        task_date: date, max_slots: max_slots, task_location: location, task_address: address, slots_available: max_slots,
         vol_arr: []};
     
     const db = client.db();

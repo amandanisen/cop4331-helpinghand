@@ -316,8 +316,7 @@ router.post('/addTask', async(req, res) =>
                     }
                 }
             );
-            console.log(update);
-            console.log(taskUpdate);
+            
             if (!ifEmpty(update) && !ifEmpty(taskUpdate))
             {
                 responsePackage.success = true;

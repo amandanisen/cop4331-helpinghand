@@ -43,7 +43,7 @@ router.post('/register', async(req, res) =>
     let error = {};
     const db = client.db();
 
-    const {email, password1, password2, first_name, last_name, accepted_distance, longitude, latitude} = req.body;
+    const {email, password1, password2, first_name, last_name, accepted_distance, longitude, latitude, address} = req.body;
     const data = 
     {
         email: email,
@@ -84,7 +84,7 @@ router.post('/register', async(req, res) =>
             const location = {type: "Point", coordinates: [longitude, latitude]};
             const newVol = {vol_accepted_distance: accepted_distance, vol_email: email, 
                     vol_first_name: first_name, vol_last_name: last_name, token: token,
-                    vol_location: location, vol_pw: hash, email_verified: "f",
+                    vol_location: location, vol_pw: hash, email_verified: "f", vol_address: address,
                     token_used: "f", task_arr: []};
             const results = await db.collection('volunteer').insertOne(newVol);
 
@@ -429,7 +429,7 @@ router.post('/tasks', async(req, res) =>
 router.post('/edit', async(req, res) =>
 {
     const db = client.db();
-    const {first_name, last_name, location, accepted_distance, email} = req.body;
+    const {first_name, last_name, longitude, latitude, address, accepted_distance, email} = req.body;
 
     var responsePackage = {success: false, changed: []};
 
@@ -439,11 +439,22 @@ router.post('/edit', async(req, res) =>
         return res.status(400).json(responsePackage);
     }
 
-    if (!ifEmpty(location))
+    if (!ifEmpty(longitude) && !ifEmpty(latitude))
         await db.collection('volunteer').updateOne({vol_email: email},
         {
             $set: {
-                vol_location: location
+                vol_location: 
+                {
+                    type: "Point",
+                    coordinates: [longitude, latitude]
+                }
+            }
+        });
+    if (!ifEmpty(address))
+    await db.collection('volunteer').updateOne({vol_email: email},
+        {
+            $set: {
+                vol_address: address
             }
         });
     if (!ifEmpty(accepted_distance))

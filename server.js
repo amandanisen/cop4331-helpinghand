@@ -16,7 +16,10 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 const app = express();
 
-
+app.use(express.static(path.join(__dirname, '../build')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build'))
+})
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -34,6 +37,9 @@ app.use((req, res, next) =>
   );
   next();
 });
+
+
+
 
 // Setup your api routes with express
 app.use("/vol", volRoutes);

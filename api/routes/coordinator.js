@@ -174,7 +174,7 @@ router.get('/verify/:token', async(req, res) => {
     const errors = {};
 
     const results = await db.collection('coordinator').find({token: token, token_used: 'f'})
-    var responsePackage = {success: true, error};
+    var responsePackage = {success: true, error:''};
 
     if (results.length == 0)
     {

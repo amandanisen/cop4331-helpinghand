@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -59,7 +59,6 @@ export default function SimpleCard(props) {
 	const bull = <span className={classes.bullet}>•</span>;
 	var user_data = JSON.parse(localStorage.getItem("user_data"));
 	var user_email = user_data.email;
-
 	function cardSelect() {
 		props.handleSelected(props.id);
 	}
@@ -133,11 +132,17 @@ export default function SimpleCard(props) {
 					subheader={
 						<div className={classes.locationField}>
 							{" "}
-							<FaMapMarkerAlt /> {props.task.task_location.coordinates}{" "}
+							<FaMapMarkerAlt /> {props.task.task_address}{" "}
+							<div className={classes.locationField} style={{ marginLeft: 18 }}>
+								{props.task.distance?.toFixed(2)} miles away
+							</div>
 						</div>
 					}
 				/>
 				<CardContent>
+					<Typography variant="body2" color="text.secondary">
+						<FaCalendarAlt /> {"   "} {props.task.task_date.substr(0, 10)}
+					</Typography>
 					<Typography variant="body2" color="text.secondary">
 						{props.task.task_description}
 					</Typography>
@@ -154,7 +159,7 @@ export default function SimpleCard(props) {
 					</Button>
 					<ButtonLeft aria-label="show more">
 						<Typography color="textSecondary">
-							Available slots : {props.task.slots_available}
+							{props.task.slots_available} / {props.task.max_slots}
 						</Typography>
 					</ButtonLeft>
 				</CardActions>

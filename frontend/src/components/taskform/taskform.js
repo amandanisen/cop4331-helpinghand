@@ -132,11 +132,11 @@ export default function EventRegistrationForm() {
 		event.preventDefault();
 
 		if (place != null) {
-			console.log(place.formatted_address);
 			var lati = place.geometry.location.lat();
 			var lng = place.geometry.location.lng();
 			console.log(lati, lng);
 		}
+		console.log(place.formatted_address);
 
 		var obj = {
 			name: title,
@@ -146,7 +146,7 @@ export default function EventRegistrationForm() {
 			latitude: lati,
 			longitude: lng,
 			email: user_email,
-			task_address: place.formatted_address,
+			address: place.formatted_address,
 		};
 		var js = JSON.stringify(obj);
 

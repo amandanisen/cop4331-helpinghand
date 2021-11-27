@@ -123,7 +123,7 @@ export default function SimpleCard(props) {
 					subheader={
 						<div className={classes.locationField}>
 							{" "}
-							<FaMapMarkerAlt /> {props.task.task_location.coordinates}{" "}
+							<FaMapMarkerAlt /> {props.task.task_address}{" "}
 						</div>
 					}
 				/>

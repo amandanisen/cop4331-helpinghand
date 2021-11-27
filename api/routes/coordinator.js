@@ -150,7 +150,7 @@ router.post('/login', async(req, res) =>
                     {expiresIn: 3600},
                     (err, token) => {
                         responsePackage = {id: results._id, first_name: results.coord_first_name, last_name: results.coord_last_name, email: coord_email, error: ''}
-                        return res.status(200).json(payload);
+                        return res.status(200).json(responsePackage);
                     }
                 );
                 return;

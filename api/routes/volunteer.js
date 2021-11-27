@@ -350,7 +350,7 @@ router.post('/removeTask', async(req, res) =>
     const {email, taskID} = req.body;
     let _task = new mongodb.ObjectId(taskID);
     const userID = await findUser({email: email, role: 'volunteer'});
-    var responsePackage = {success: true, error};
+    var responsePackage = {success: true, error: ''};
     const task = await db.collection('tasks').find({_id: _task, vol_arr: {$eq: userID}});
 
     if (!ifEmpty(task))

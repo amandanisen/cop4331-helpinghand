@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ShareIcon from "@mui/icons-material/Share";
 import { Controller } from "@react-spring/core";
+const buildPath = require("../../redux/buildPath");
 
 const useStyles = makeStyles({
 	root: {
@@ -56,9 +57,53 @@ export default function SimpleCard(props) {
 	// const [selected, setSelected] = useState(false)
 	const classes = useStyles();
 	const bull = <span className={classes.bullet}>•</span>;
+	var user_data = JSON.parse(localStorage.getItem("user_data"));
+	var user_email = user_data.email;
 
 	function cardSelect() {
 		props.handleSelected(props.id);
+	}
+
+	async function handleFinished() {
+		console.log(buildPath("/vol/removeTask"));
+		console.log(user_data);
+		var obj = { email: user_email, taskID: props.task._id };
+
+		var js = JSON.stringify(obj);
+		console.log(js);
+
+		try {
+			const response = await fetch(buildPath("/vol/removeTask"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: js,
+			});
+			console.log(response);
+			var res = JSON.parse(await response.text());
+			console.log(res);
+			if (res.error != null) {
+				console.log(res.error);
+			} else {
+				console.log("success");
+				window.location.reload(true);
+
+				//this is a check because the page might render twice and cause the call to fail
+				//if the call fails and res is set then the structure is different from if it returned tasks
+				//and we cans use the same syntax to parse it with map
+				if (res != "no such user found") {
+					// props = res;
+					// history.push({
+					// 	pathname: "/volunteer", // your data array of objects
+					// });
+				} else {
+					console.log("User not found error");
+				}
+				return res;
+			}
+		} catch (e) {
+			alert(e.toString());
+			return;
+		}
 	}
 
 	const ButtonLeft = styled((props) => {
@@ -103,7 +148,7 @@ export default function SimpleCard(props) {
 						aria-label="finish tasks"
 						variant="contained"
 						key={props.task.task_name}
-						onClick={() => {}}
+						onClick={handleFinished}
 					>
 						Finished
 					</Button>

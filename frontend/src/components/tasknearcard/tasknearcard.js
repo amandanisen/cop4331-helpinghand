@@ -112,9 +112,9 @@ export default function AreaCard(props) {
 				//and we cans use the same syntax to parse it with map
 				if (res != "no such user found") {
 					setPosts(res);
-					history.push({
-						pathname: "/volunteer", // your data array of objects
-					});
+					// history.push({
+					// 	pathname: "/volunteer", // your data array of objects
+					// });
 				} else {
 					console.log("User not found error");
 				}
@@ -124,6 +124,17 @@ export default function AreaCard(props) {
 			alert(e.toString());
 			return;
 		}
+	}
+
+	async function goToSummaryPage() {
+		let result = await handleSubmit(); // wait for the fetch to complete
+		// console.log(result);
+		// if (!result.error) {
+		// get whatever you need from 'result'
+		history.push("/volunteer");
+		// } else {
+		// 	// show error from 'result.error'
+		// }
 	}
 
 	return (
@@ -154,7 +165,7 @@ export default function AreaCard(props) {
 						aria-label="add to tasks"
 						variant="contained"
 						key={props.name}
-						onClick={handleSubmit}
+						onClick={goToSummaryPage}
 					>
 						Add
 					</Button>

@@ -146,6 +146,7 @@ export default function EventRegistrationForm() {
 			latitude: lati,
 			longitude: lng,
 			email: user_email,
+			task_address: place.formatted_address,
 		};
 		var js = JSON.stringify(obj);
 

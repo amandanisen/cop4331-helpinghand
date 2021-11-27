@@ -52,7 +52,7 @@ router.post('/create', async(req, res) =>
       m = parseInt(max_slots);
     }
     const newTask = {task_name: name, task_description: description, 
-        task_date: d, max_slots: m, task_location: location, task_address: address, slots_available: max_slots,
+        task_date: d, max_slots: m, task_location: location, task_address: address, slots_available: m,
         vol_arr: []};
     
     const db = client.db();

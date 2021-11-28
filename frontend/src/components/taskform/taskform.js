@@ -14,6 +14,7 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import AutoComplete from "react-google-autocomplete";
 import DateFnsUtils from "@date-io/date-fns";
+import * as moment from "moment";
 
 import {
 	KeyboardDatePicker,
@@ -137,11 +138,13 @@ export default function EventRegistrationForm() {
 			console.log(lati, lng);
 		}
 		console.log(place.formatted_address);
-
+		const beginDate = moment(selectedDate).format("YYYY-MM-DD");
+		console.log("ddate: ", beginDate);
+		console.log(selectedDate);
 		var obj = {
 			name: title,
 			description: description,
-			date: selectedDate,
+			date: beginDate,
 			max_slots: maxVol,
 			latitude: lati,
 			longitude: lng,

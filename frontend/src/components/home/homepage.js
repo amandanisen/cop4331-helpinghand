@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import Appbar from "../appbar/appbar.js";
@@ -30,7 +29,7 @@ import "./homepage.css";
 import Particles from "react-tsparticles";
 import "react-tabs/style/react-tabs.css";
 import { FaCentercode } from "react-icons/fa";
-import { sendConfirmationEmail } from "../../mailer.js";
+// import { sendConfirmationEmail } from "../../mailer.js";
 
 const buildPath = require("../../redux/buildPath");
 
@@ -188,7 +187,7 @@ function AccessCodePage(props) {
 						localStorage.setItem("user_data", JSON.stringify(user));
 
 						setMessage("");
-						await sendConfirmationEmail({toUser: user.email, hash: user.id});
+						// await sendConfirmationEmail({toUser: user.email, hash: user.id});
 						history.push("/findtask"); // would this be history.push areas as well
 					}
 				} catch (e) {
@@ -225,7 +224,7 @@ function AccessCodePage(props) {
 							email: res.email,
 						};
 						localStorage.setItem("user_data", JSON.stringify(user));
-						await sendConfirmationEmail({toUser: user.email, hash: user.id});
+						// await sendConfirmationEmail({toUser: user.email, hash: user.id});
 						history.push("/coordinatorPage"); // would this be history.push areas as well
 					}
 				} catch (e) {

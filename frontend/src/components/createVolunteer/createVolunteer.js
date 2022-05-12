@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateVolunteer() {
-	const apiKey = "AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4";
+	const apiKey = "";
 	const [location, setLocation] = useState(null);
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -215,7 +215,8 @@ export default function CreateVolunteer() {
 					}}
 					style={{ width: 100 }}
 					apiOptions={{ region: "us" }}
-					apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+					apiKey=""
+					//commented out api key
 				/>
 				{/* </Grid> */}
 				<Grid item>

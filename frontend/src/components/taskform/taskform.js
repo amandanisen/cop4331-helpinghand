@@ -259,7 +259,7 @@ export default function EventRegistrationForm() {
 
 							<AutoComplete
 								placeholder="Location*"
-								apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+								apiKey=""
 								required
 								style={{
 									width: "100%",

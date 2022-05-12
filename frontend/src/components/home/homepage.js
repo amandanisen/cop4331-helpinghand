@@ -64,7 +64,7 @@ function AccessCodePage(props) {
 	}
 
 	const [roleShown, setRoleShown] = useState(true);
-	const apiKey = "AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4";
+	const apiKey = "";
 	//login
 	const [email, setEmail] = useState("");
 	const [message, setMessage] = useState("");
@@ -519,7 +519,7 @@ function AccessCodePage(props) {
 							<Grid>
 								<AutoComplete
 									placeholder="Current Location*"
-									apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+									apiKey=""
 									required
 									style={{
 										width: "100%",
@@ -548,7 +548,7 @@ function AccessCodePage(props) {
 								}}
 								style={{ width: 100 }}
 								apiOptions={{ region: "us" }}
-								apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+								apiKey=""
 							/> */}
 
 							<TextField

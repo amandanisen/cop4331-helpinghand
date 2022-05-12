@@ -47,7 +47,7 @@ function Edit(props) {
 	// const [message, setMessage] = useState('');
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState(null);
-	const apiKey = "AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4";
+	const apiKey = "";
 	console.log(location);
 	async function handleEdit(event) {
 		event.preventDefault();
@@ -135,7 +135,7 @@ function Edit(props) {
                 /> */}
 							<AutoComplete
 								placeholder="Current Location*"
-								apiKey="AIzaSyCVF0U1KIXIVF3WkEhJ84Ps3EnlKt4NtO4"
+								apiKey=""
 								required
 								style={{
 									width: "100%",

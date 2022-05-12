@@ -1,5 +1,9 @@
 const Validator = require("validator");
 const ifEmpty = require("./checkForEmpty");
+<<<<<<< HEAD
+=======
+const coord = require("./coordinate");
+>>>>>>> working-dev
 
 function checkRegistrationFields(data) {
     // data: email, password1, password2, location
@@ -37,6 +41,13 @@ function checkRegistrationFields(data) {
     }
     else
     {
+<<<<<<< HEAD
+=======
+        if (coord.checkCoords({latitude: data.latitude, longitude: data.longitude}).isValid == false)
+        {
+            errors.coordinates = "invalid coordinates";
+        }
+>>>>>>> working-dev
         if (Validator.isEmpty(data.email)) {
             errors.email = "Email is required";
         }

@@ -1,2 +1,8 @@
 {
+<<<<<<< HEAD
+=======
+    "git.ignoreLimitWarning": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+>>>>>>> working-dev
 }

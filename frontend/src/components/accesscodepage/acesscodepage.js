@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import { makeStyles } from '@material-ui/core/styles';
+<<<<<<< HEAD
 import TaskCard from '../taskcard/taskcard.js'
+=======
+import TaskCard from '../volunteertaskcard/taskcard.js'
+>>>>>>> working-dev
 import Grid from '@material-ui/core/Grid';
 import Appbar from "../appbar/appbar.js";
 import Typography from '@material-ui/core/Typography';
@@ -29,6 +33,7 @@ function AccessCodePage(props) {
   const classes = useStyles();
   const location = useLocation();
   let history = useHistory();
+<<<<<<< HEAD
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -124,6 +129,32 @@ function AccessCodePage(props) {
     return (
       <>
         <Appbar title={location.state.role} />
+=======
+  const [accessCode, setAccessCode] = useState("");
+  const [fullName, setFullName] = useState("");
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    console.log(props);
+    console.log("Access Code:", accessCode);
+    console.log("Full Name:", fullName);
+    
+    history.push("/findtask");
+    // axios.get('/event/' + location.state.role + "/" + accessCode)
+    //   .then((response) => {
+    //     console.log("Reponse:", response);
+        // props.areaAction(response.data.areas);
+    //     history.push("/areas");
+    //   })
+    //   .catch((error) => {
+    //     console.log("Get Event Error:", error);
+    //   })
+  }
+  
+    return (
+      <>
+         <Appbar title="Homepage test" />
+>>>>>>> working-dev
           <form onSubmit={handleSubmit}>
           <Grid container
                 direction="column"
@@ -140,16 +171,25 @@ function AccessCodePage(props) {
             <Grid item>
               <TextField
                 required
+<<<<<<< HEAD
                 id="email"
                 placeholder={"Email"}
                 margin="normal"
                 variant="filled"
                 onChange={(e)=> setEmail(e.target.value)}
+=======
+                id="filled-bare"
+                placeholder={"Email"}
+                margin="normal"
+                variant="filled"
+                onChange={(e)=> setFullName(e.target.value)}
+>>>>>>> working-dev
                />
             </Grid>
             <Grid item>
               <TextField
                 required
+<<<<<<< HEAD
                 id="password"
                 placeholder={"Password"}
                 margin="normal"
@@ -163,6 +203,18 @@ function AccessCodePage(props) {
               type="submit">
               Submit
 
+=======
+                id="filled-bare"
+                placeholder={"Password"}
+                margin="normal"
+                variant="filled"
+                onChange={(e)=> setAccessCode(e.target.value)}
+               />
+            </Grid>
+            <Grid>
+            <Button className={classes.button} type="submit">
+              Submit
+>>>>>>> working-dev
             </Button>
           
             </Grid>

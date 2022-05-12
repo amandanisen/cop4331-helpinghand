@@ -10,6 +10,19 @@ import AddIcon from '@material-ui/icons/Add';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SearchIcon from '@material-ui/icons/Search';
 import { useHistory } from "react-router-dom";
+<<<<<<< HEAD
+=======
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
+import { Link } from 'react-router-dom';
+import { IconContext } from 'react-icons';
+import { useState } from 'react';
+import './appbar.css';
+import { SidebarData } from '../sidebar/SidebarData.js';
+import Button from 'react-bootstrap/Button';
+import { VscEdit } from "react-icons/vsc";
+import { RiLogoutBoxLine} from "react-icons/ri";
+>>>>>>> working-dev
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,7 +31,15 @@ const useStyles = makeStyles((theme) => ({
 
     },
     menuButton: {
+<<<<<<< HEAD
         // marginRight: theme.spacing(2),
+=======
+        marginRight: theme.spacing(2),
+        backgroundColor: '#005424',
+        color: '#ffff',
+        // borderRadius: 10,
+        // borderWidth: 5,
+>>>>>>> working-dev
     },
     title: {
         color: "#FFFFFF",
@@ -28,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
             display: 'block',
         },
         textAlign: "center",
+<<<<<<< HEAD
+=======
+        marginRight: '38px',
+>>>>>>> working-dev
     },
     backIcon: {
         color: '#FFFFFF',
@@ -57,6 +82,7 @@ export default function Appbar(props) {
     let history = useHistory();
 
     let appbarType = props;
+<<<<<<< HEAD
     return (
         <>
             {(props.type === "coordinator")
@@ -98,4 +124,89 @@ export default function Appbar(props) {
 
         </>
     );
+=======
+    let appBarName;
+
+    const [sidebar, setSidebar] = useState(false);
+    const showSidebar = () => setSidebar(!sidebar);
+    
+    return (
+      <>
+      {(props.type === "coordinator")
+        ?
+        <AppBar position="static" >
+            <Toolbar variant="dense" className={classes.root}>
+                <IconButton edge="start" className={classes.menuButton} aria-label="menu">
+                    {/* <ArrowBackIosIcon className={classes.backIcon} /> */}
+                </IconButton >
+                <Typography className={classes.title} variant="h6" noWrap>
+                {props.title}
+                </Typography>
+                {/* <Typography variant="h6" color="inherit">
+                    {props.eventName ? props.eventName : null}  */}
+             {/* </Typography> */}
+             {/* <AddIcon/> */}
+
+            </Toolbar>
+        </AppBar>
+    :
+
+      <AppBar position="static" >
+            <Toolbar variant="dense" className={classes.root}>
+            <IconContext.Provider value={{ color: '#fff' }}>
+            <div className='navbar'>
+              <Link to='#' className='menu-bars'>
+                <FaIcons.FaBars onClick={showSidebar} />
+              </Link>
+            </div>
+            <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+              <ul className='nav-menu-items' onClick={showSidebar}>
+                <li className='navbar-toggle'>
+                  <Link to='#' className='menu-bars'>
+                    <AiIcons.AiOutlineClose />
+                  </Link>
+                </li>
+                <Button className= 'button-test'  onClick={() => history.push("/edit")} > <VscEdit/>edit </Button>
+                <Button className= 'button-test'  onClick={() => history.push("/")} > <RiLogoutBoxLine/>logout </Button>
+                {/* {SidebarData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path}>
+                        {item.icon}
+                        <span>{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })} */}
+              </ul>
+            </nav>
+          </IconContext.Provider>
+   
+             <Typography className={classes.title} variant="h6" noWrap>
+             {props.title}
+
+                     </Typography>
+                     <IconButton
+                      alginSelf= 'flex-end' 
+                      edge="end"
+                      className={classes.menuButton}
+                      color="inherit"
+                      aria-label="open drawer"
+                  >
+                  {props.title == 'Volunteer Tasks Near You'?  <Button className= 'button-summary'  onClick={() => 
+                  { history.push({
+                    pathname: '/volunteer' // your data array of objects
+                  })} }>Summary</Button> : null }
+                 
+                  {/* <ArrowBackIosIcon className={classes.backIcon} onClick = {() => history.goBack()}/> */}
+                  </IconButton>
+                 </Toolbar>
+             </AppBar>
+
+              }
+                  </>
+
+    );
+              
+>>>>>>> working-dev
 }

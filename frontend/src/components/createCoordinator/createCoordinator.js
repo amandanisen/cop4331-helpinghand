@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+<<<<<<< HEAD
 export default function CreateCoordinator() {
     const classes = useStyles();
     let history = useHistory();
@@ -70,6 +71,47 @@ export default function CreateCoordinator() {
     var email = '';
     var password = '';
     var location = '';
+=======
+
+
+export default function CreateCoordinator() {
+    /*
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        var obj = {email: email, password: password};
+        var js = JSON.stringify(obj);
+
+        try
+        {
+            const response = await fetch(buildPath('/coord/register'), {method: 'POST',
+            body: js, headers:{'Content-Type':'application/json'}});
+
+            var res = JSON.parse(await response.text());
+            if (res.id < 0)
+            {
+            setMessage(res.error);
+            }
+            else
+            {
+            var user = {first_name: res.first_name, last_name: res.last_name, id: res.id};
+            localStorage.setItem('user_data', JSON.stringify(user));
+
+            setMessage('');
+            history.push('/areas');
+            }
+        }
+        catch (e)
+        {
+            alert(e.toString());
+            return;
+        }
+    };
+    */
+
+    const classes = useStyles();
+    let history = useHistory();
+>>>>>>> working-dev
     return (
         <div>
             <Appbar title="Coordinator" type="coordinator" />
@@ -92,7 +134,11 @@ export default function CreateCoordinator() {
                 placeholder={"Full Name"}
                 margin="normal"
                 variant="filled"
+<<<<<<< HEAD
                 onChange={(e)=> setFullName(e.target.value)}
+=======
+                //onChange={(e)=> setFullName(e.target.value)}
+>>>>>>> working-dev
                />
             </Grid>
             <Grid item>
@@ -102,7 +148,11 @@ export default function CreateCoordinator() {
                 placeholder={"Email"}
                 margin="normal"
                 variant="filled"
+<<<<<<< HEAD
                 onChange={(e)=> setFullName(e.target.value)}
+=======
+                //onChange={(e)=> setFullName(e.target.value)}
+>>>>>>> working-dev
                />
             </Grid>
             <Grid item>
@@ -112,23 +162,37 @@ export default function CreateCoordinator() {
                 placeholder={"Password"}
                 margin="normal"
                 variant="filled"
+<<<<<<< HEAD
                 onChange={(e)=> setFullName(e.target.value)}
+=======
+                //onChange={(e)=> setFullName(e.target.value)}
+>>>>>>> working-dev
                />
             </Grid>
             <Grid item>
               <TextField
                 required
                 id="filled-bare"
+<<<<<<< HEAD
                 placeholder={"Location"}
                 margin="normal"
                 variant="filled"
                 onChange={(e)=> setFullName(e.target.value)}
+=======
+                placeholder={"Confirm Password"}
+                margin="normal"
+                variant="filled"
+                //onChange={(e)=> setFullName(e.target.value)}
+>>>>>>> working-dev
                />
             </Grid>
             <Grid item>
             <Button 
                 className={classes.smallbutton}
+<<<<<<< HEAD
 
+=======
+>>>>>>> working-dev
                 onClick={()=> history.push("/coordinatorpage", {role: ""})}>Submit
             </Button>
             </Grid>
